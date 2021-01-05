@@ -6,10 +6,15 @@
   "dependencies": {
     "express": "^4.17.1",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "webpack-dev-server --mode development --open --hot",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
