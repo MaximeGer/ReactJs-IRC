@@ -1,0 +1,25 @@
+{
+  "name": "t-jsf-600-nan-6-1-ircjavascript-maxime.germond",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EpitechIT2020/T-JSF-600-NAN-6-1-IRCjavascript-maxime.germond.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EpitechIT2020/T-JSF-600-NAN-6-1-IRCjavascript-maxime.germond/issues"
+  },
+  "homepage": "https://github.com/EpitechIT2020/T-JSF-600-NAN-6-1-IRCjavascript-maxime.germond#readme"
+}
