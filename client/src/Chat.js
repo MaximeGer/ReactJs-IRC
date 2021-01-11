@@ -107,7 +107,7 @@ class Chat extends React.Component{
             } else if (usersRegex.test(message)){
                 commandString = message.slice(7);
                 // LIST ALL USERS
-                console.log("List users on the channel with the name : " + commandString);
+                console.log("List users on the channel");
 
             } else if (msgRegex.test(message)){
                 commandString = message.slice(5);
@@ -116,8 +116,10 @@ class Chat extends React.Component{
                 } else {
 
                 }
-                var nickToSend = new RegExp("^([^s]+)").exec(commandString);
-                var messageToSend = "commandString.slice(nickToSend)";
+
+                var nickToSend = commandString.substr(0,commandString.indexOf(' '));
+                var messageToSend = commandString.substr(commandString.indexOf(' ')+1);
+
 
                 console.log("Send " + messageToSend + " to the user with the name : " + nickToSend);
 
