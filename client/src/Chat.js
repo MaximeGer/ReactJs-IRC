@@ -25,12 +25,31 @@ class Chat extends React.Component{
 
         this.sendMessage = ev => {
             ev.preventDefault();
-            this.socket.emit('SEND_MESSAGE', {
-                author: this.state.username,
-                message: this.state.message
-            })
-            this.setState({message: ''});
+            
+            var message = this.state.message;
+            var nickRegex = new RegExp("^/nick");
+            var listRegex = new RegExp("^/list");
 
+
+            if(nickRegex.test(message)){
+                this.state.username = message.slice(6);
+
+            } else if (listRegex.test(message)){
+                var listString = message.slice(6);
+                if ( listString == "" || listString == null){
+                    console.log("Display all channel available " + listString);
+                    // TODO Display all channel available
+                } else {
+                    console.log("Display all channel available according to a string " + listString);
+                    // TODO Display all channel available according to a string
+                }
+            } else {
+                this.socket.emit('SEND_MESSAGE', {
+                    author: this.state.username,
+                    message: message
+                })
+            }
+            this.setState({message: ''});
         }
     }
     render(){
@@ -45,15 +64,13 @@ class Chat extends React.Component{
                                 <div className="messages">
                                     {this.state.messages.map(message => {
                                         return (
-                                            <div>{message.author}: {message.message}</div>
+                                            <div>{message.author} : {message.message}</div>
                                         )
                                     })}
                                 </div>
 
                             </div>
                             <div className="card-footer">
-                                <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})} className="form-control"/>
-                                <br/>
                                 <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})}/>
                                 <br/>
                                 <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
