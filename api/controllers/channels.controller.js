@@ -89,7 +89,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
 
     Channel.destroy({
-        where: { id: id }
+        where: { name: id }
     })
         .then(num => {
             if (num == 1) {

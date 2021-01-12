@@ -9,6 +9,12 @@ class App extends Component {
     this.state = { apiResponse: "" };
   }
 
+  // createChannel(){
+  //   this.render() {
+  //     return (<Chat/>);
+  //   }
+  // }
+
   callAPI() {
     fetch("http://localhost:9000/testAPI")
       .then(res => res.text())
@@ -22,8 +28,12 @@ class App extends Component {
   render() {
     return (
       <div>
-          <Chat/>
-          <p>{this.state.apiResponse}</p>
+        <div className="container">
+          <div className="row">
+              <Chat />
+          </div>
+        </div>
+        <p>{this.state.apiResponse}</p>
       </div>
     );
   }

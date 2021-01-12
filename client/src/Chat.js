@@ -1,16 +1,17 @@
 import React from "react";
+import ReactDOM from 'react-dom'
 import io from "socket.io-client";
 
 class Chat extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             username: '',
             message: '',
             error: '',
             channels: [],
-            messages: []
+            messages: [],
+            title: this.props.title || "Global Chat"
         };
 
         this.socket = io('localhost:9000');
@@ -89,6 +90,14 @@ class Chat extends React.Component {
                 } else {
                     // JOIN CHANNEL DB + SOCKET.IO
                     console.log("Join the channel with the name : " + commandString);
+                    var div = document.createElement("div");
+                    div.className = "row"
+                    document.querySelector(".container").append(div)
+                    const nodes = document.querySelectorAll(".row")
+                    const last = nodes[nodes.length-1];
+                    const element = <Chat title="test"/>;
+                    ReactDOM.render(element, last )
+                    // React.createElement(element, document.querySelector("body"))
                     this.setState({ channels: [...this.state.channels, commandString] });
                     this.socket.emit('JOIN_ROOM', {
                         room: commandString
@@ -150,29 +159,25 @@ class Chat extends React.Component {
     }
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-4">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="card-title">Global Chat</div>
-                                <hr />
-                                <div className="messages">
-                                    {this.state.messages.map(message => {
-                                        return (
-                                            <div>{message.author} : {message.message}</div>
-                                        )
-                                    })}
-                                </div>
-
-                            </div>
-                            <div className="card-footer">
-                                <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
-                                <div className="errorCommands">{this.state.error}</div>
-                                <br />
-                                <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
-                            </div>
+            <div className="col-4">
+                <div className="card">
+                    <div className="card-body">
+                        <div className="card-title">{this.state.title}</div>
+                        <hr />
+                        <div className="messages">
+                            {this.state.messages.map(message => {
+                                return (
+                                    <div>{message.author} : {message.message}</div>
+                                )
+                            })}
                         </div>
+
+                    </div>
+                    <div className="card-footer">
+                        <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+                        <div className="errorCommands">{this.state.error}</div>
+                        <br />
+                        <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
                     </div>
                     <div className="channel">
                         {this.state.channels.map(channel => {
