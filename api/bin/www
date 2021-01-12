@@ -42,9 +42,16 @@ io.on('connection', (socket) => {
 
   socket.on('SEND_MESSAGE', function (data) {
     data.rooms.forEach(room => {
-      console.log(`Send ` + data + ` to :` + room)
       io.to(room).emit('RECEIVE_MESSAGE', data);
     });
+  })
+
+  socket.on('JOIN_ROOM', function(data){
+    socket.join(data.room);
+  })
+
+  socket.on('QUIT_ROOM', function(data){
+    socket.leave(data.room);
   })
 })
 /**

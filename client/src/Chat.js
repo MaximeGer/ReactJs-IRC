@@ -89,10 +89,9 @@ class Chat extends React.Component {
                     // JOIN CHANNEL DB + SOCKET.IO
                     console.log("Join the channel with the name : " + commandString);
                     this.setState({ channels: [...this.state.channels, commandString] });
-
-
-
-
+                    this.socket.emit('JOIN_ROOM',{
+                        room: commandString
+                    })
                 }
 
             } else if (quitRegex.test(message)) {
@@ -108,7 +107,7 @@ class Chat extends React.Component {
                 } else {
                     // QUIT CHANNEL
                     console.log("Quit the channel with the name : " + commandString + " if it exist and you joined it");
-                    this.state.channels.map(channel => {
+                    this.state.channels.forEach(channel => {
                         if (channel === commandString) {
                             channel = null;
                         }
@@ -137,12 +136,10 @@ class Chat extends React.Component {
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 
-                this.state.channels.map(channel => {
-                    this.socket.emit('SEND_MESSAGE', {
-                        author: this.state.username,
-                        message: message,
-                        rooms: this.state.channels
-                    })
+                this.socket.emit('SEND_MESSAGE', {
+                    author: this.state.username,
+                    message: message,
+                    rooms: this.state.channels
                 })
                 console.log("channels : " + this.state.channels);
 
