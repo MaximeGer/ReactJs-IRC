@@ -1,5 +1,7 @@
 /api/node_modules
 /api/package-lock.json
+/client/.eslintcache
+/api/config/db.config.js
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
