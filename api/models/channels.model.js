@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Channel = sequelize.define("channel", {
-        name: {
+      name: {
         type: Sequelize.STRING
       },
     });
