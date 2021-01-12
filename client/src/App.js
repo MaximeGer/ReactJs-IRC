@@ -33,7 +33,6 @@ class App extends Component {
               <Chat />
           </div>
         </div>
-        <p>{this.state.apiResponse}</p>
       </div>
     );
   }
