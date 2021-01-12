@@ -111,17 +111,17 @@ class Chat extends React.Component{
 
             } else if (msgRegex.test(message)){
                 commandString = message.slice(5);
-                if(commandString === "" || commandString === null){
-                    this.state.error ="You have to specify a name and a message to send  : \"/msg nickname message\"";
-                } else {
-
-                }
-
                 var nickToSend = commandString.substr(0,commandString.indexOf(' '));
                 var messageToSend = commandString.substr(commandString.indexOf(' ')+1);
+                if(messageToSend === "" || messageToSend === null || nickToSend === "" || nickToSend === null){
+                    this.state.error ="You have to specify a name and a message to send  : \"/msg nickname message\"";
+                } else{
+                    // SEND MESSAGE
+                    console.log("Send \"" + messageToSend + "\" to the user with the name : " + nickToSend);
+                } 
 
 
-                console.log("Send " + messageToSend + " to the user with the name : " + nickToSend);
+
 
             } else {
                 // NORMAL MESSAGE
