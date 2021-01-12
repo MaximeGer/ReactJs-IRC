@@ -29,7 +29,7 @@ class Chat extends React.Component {
             //console.log(this.state.messages);
         };
 
-        this.sendMessage = ev => {
+        this.sendMessage = async ev => {
             ev.preventDefault();
 
             var message = this.state.message;
@@ -62,11 +62,11 @@ class Chat extends React.Component {
                 }
             } else if (createRegex.test(message)) {
                 commandString = message.slice(8);
-                createChannel(commandString);
+                await createChannel(commandString);
 
             } else if (deleteRegex.test(message)) {
                 commandString = message.slice(8);
-                deleteChannel(commandString);
+                await deleteChannel(commandString);
 
             } else if (joinRegex.test(message)) {
                 commandString = message.slice(6);
@@ -125,30 +125,27 @@ class Chat extends React.Component {
         }
 
         const joinChannel = name => {
-                
-				
-				
-                if (name === "" || name === " " || name === null) {
-                    this.state.error = "You have to specify a name for the channel you want to join : \"/join newChannel\"";
-                } else if (false) {
-                    // If does not exist :
-                    this.state.error = "This channel does not exist : " + name;
-                } else {
-                    // JOIN CHANNEL DB + SOCKET.IO
-                    console.log("Join the channel with the name : " + commandString);
-                    var div = document.createElement("div");
-                    div.className = "row"
-                    document.querySelector(".container").append(div)
-                    const nodes = document.querySelectorAll(".row")
-                    const last = nodes[nodes.length-1];
-                    const element = <Chat title="test"/>;
-                    ReactDOM.render(element, last )
-                    // React.createElement(element, document.querySelector("body"))
-					this.setState({ channels: [...this.state.channels, name] });
-                    this.socket.emit('JOIN_ROOM', {
-                        room: name
-                    })
-                }
+            if (name === "" || name === " " || name === null) {
+                this.state.error = "You have to specify a name for the channel you want to join : \"/join newChannel\"";
+            } else if (false) {
+                // If does not exist :
+                this.state.error = "This channel does not exist : " + name;
+            } else {
+                // JOIN CHANNEL DB + SOCKET.IO
+                console.log("Join the channel with the name : " + name);
+                var div = document.createElement("div");
+                div.className = "row"
+                document.querySelector(".container").append(div)
+                const nodes = document.querySelectorAll(".row")
+                const last = nodes[nodes.length - 1];
+                const element = <Chat title="test" />;
+                ReactDOM.render(element, last)
+                // React.createElement(element, document.querySelector("body"))
+                this.setState({ channels: [...this.state.channels, name] });
+                this.socket.emit('JOIN_ROOM', {
+                    room: name
+                })
+            }
         }
 
         const deleteChannel = async name => {
