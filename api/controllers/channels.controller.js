@@ -105,7 +105,6 @@ exports.update = (req, res) => {
 // Delete a Channel with the specified name in the request
 exports.delete = (req, res) => {
     const name = req.params.name;
-    console.log(name)
 
     Channel.destroy({
         where: { name: name }

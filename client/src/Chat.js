@@ -1,18 +1,19 @@
 import React from "react";
+import ReactDOM from 'react-dom'
 import io from "socket.io-client";
 import axios from "axios";
 
 class Chat extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             username: '',
             message: '',
             error: '',
             success: '',
             channels: [],
-            messages: []
+            messages: [],
+            title: this.props.title || "Global Chat"
         };
 
         this.socket = io('localhost:9000');
@@ -124,6 +125,9 @@ class Chat extends React.Component {
         }
 
         const joinChannel = name => {
+                
+				
+				
                 if (name === "" || name === " " || name === null) {
                     this.state.error = "You have to specify a name for the channel you want to join : \"/join newChannel\"";
                 } else if (false) {
@@ -131,7 +135,16 @@ class Chat extends React.Component {
                     this.state.error = "This channel does not exist : " + name;
                 } else {
                     // JOIN CHANNEL DB + SOCKET.IO
-                    this.setState({ channels: [...this.state.channels, name] });
+                    console.log("Join the channel with the name : " + commandString);
+                    var div = document.createElement("div");
+                    div.className = "row"
+                    document.querySelector(".container").append(div)
+                    const nodes = document.querySelectorAll(".row")
+                    const last = nodes[nodes.length-1];
+                    const element = <Chat title="test"/>;
+                    ReactDOM.render(element, last )
+                    // React.createElement(element, document.querySelector("body"))
+					this.setState({ channels: [...this.state.channels, name] });
                     this.socket.emit('JOIN_ROOM', {
                         room: name
                     })
@@ -185,30 +198,25 @@ class Chat extends React.Component {
     }
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-4">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="card-title">Global Chat</div>
-                                <hr />
-                                <div className="messages">
-                                    {this.state.messages.map(message => {
-                                        return (
-                                            <div>{message.author} : {message.message}</div>
-                                        )
-                                    })}
-                                </div>
-
-                            </div>
-                            <div className="card-footer">
-                                <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
-                                <div className="errorCommands">{this.state.error}</div>
-                                <div className="successCommands">{this.state.success}</div>
-                                <br />
-                                <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
-                            </div>
+            <div className="col-4">
+                <div className="card">
+                    <div className="card-body">
+                        <div className="card-title">{this.state.title}</div>
+                        <hr />
+                        <div className="messages">
+                            {this.state.messages.map(message => {
+                                return (
+                                    <div>{message.author} : {message.message}</div>
+                                )
+                            })}
                         </div>
+
+                    </div>
+                    <div className="card-footer">
+                        <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+                        <div className="errorCommands">{this.state.error}</div>
+                        <br />
+                        <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
                     </div>
                 </div>
             </div>
