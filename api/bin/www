@@ -53,6 +53,15 @@ io.on('connection', (socket) => {
   socket.on('QUIT_ROOM', function(data){
     socket.leave(data.room);
   })
+
+  socket.on('DELETE_ROOM', function (data) {
+    io.in(data.room).clients(function (error, clients) {
+      if (error) throw error;
+      for (var i = 0; i < clients.length; i++) {
+        io.sockets.connected[clients[i]].disconnect(true)
+      }
+    });
+  });
 })
 /**
  * Normalize a port into a number, string, or false.

@@ -3,6 +3,7 @@ const Channel = db.channels;
 
 // Create and Save a new Channel
 exports.create = (req, res) => {
+    console.log(req.body);
     // Validate request
     if (!req.body.name) {
         res.status(400).send({
@@ -45,7 +46,7 @@ exports.findAll = (req, res) => {
 
 
 // Find a single Channel with an id
-exports.findOne = (req, res) => {
+exports.findById = (req, res) => {
     const id = req.params.id;
 
     Channel.findByPk(id)
@@ -58,6 +59,23 @@ exports.findOne = (req, res) => {
             });
         });
 };
+
+
+// Find a single Channel with an id
+exports.findByName = (req, res) => {
+    const id = req.params.id;
+
+    Channel.findByPk(id)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error retrieving Channel with name=" + id
+            });
+        });
+};
+
 
 // Update a Channel by the id in the request
 exports.update = (req, res) => {
@@ -84,12 +102,13 @@ exports.update = (req, res) => {
         });
 };
 
-// Delete a Channel with the specified id in the request
+// Delete a Channel with the specified name in the request
 exports.delete = (req, res) => {
-    const id = req.params.id;
+    const name = req.params.name;
+    console.log(name)
 
     Channel.destroy({
-        where: { id: id }
+        where: { name: name }
     })
         .then(num => {
             if (num == 1) {
@@ -97,14 +116,14 @@ exports.delete = (req, res) => {
                     message: "Channel was deleted successfully!"
                 });
             } else {
-                res.send({
-                    message: `Cannot delete Channel with id=${id}. Maybe Channel was not found!`
+                res.status(404).send({
+                    message: `Cannot delete Channel with name=${name}. Maybe Channel was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Channel with id=" + id
+                message: "Could not delete Channel with id=" + name
             });
         });
 };

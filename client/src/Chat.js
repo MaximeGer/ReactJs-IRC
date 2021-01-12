@@ -1,5 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
+import axios from "axios";
 
 class Chat extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class Chat extends React.Component {
             username: '',
             message: '',
             error: '',
+            success: '',
             channels: [],
             messages: []
         };
@@ -21,7 +23,7 @@ class Chat extends React.Component {
 
         const addMessage = data => {
             console.log(data);
-            
+
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
@@ -41,6 +43,7 @@ class Chat extends React.Component {
 
             var commandString = "";
             this.state.error = "";
+            this.state.success = "";
 
             if (nickRegex.test(message)) {
                 this.state.username = message.slice(6);
@@ -58,63 +61,20 @@ class Chat extends React.Component {
                 }
             } else if (createRegex.test(message)) {
                 commandString = message.slice(8);
-                if (commandString === "" || commandString === " " || commandString === null) {
-                    this.state.error = "You have to specify a name for your new channel : \"/create newChannel\"";
-                } else if (false) {
-                    // If command pas bon format : 
-                    this.state.error = "The name of your new channel have to be of the format : ";
-                } else {
-                    // CREATE CHANNEL 
-                    console.log("Create a channel with the name : " + commandString);
-                }
+                createChannel(commandString);
+
             } else if (deleteRegex.test(message)) {
                 commandString = message.slice(8);
-                if (commandString === "" || commandString === " " || commandString === null) {
-                    this.state.error = "You have to specify a name for the channel you want to delete : \"/delete newChannel\"";
-                } else if (false) {
-                    // If does not exist :
-                    this.state.error = "This channel has already been deleted or does not exist : ";
-                } else {
-                    // DELETE CHANNEL
-                    console.log("Delete the channel with the name : " + commandString + ", if it exist");
-                }
+                deleteChannel(commandString);
 
             } else if (joinRegex.test(message)) {
                 commandString = message.slice(6);
-                if (commandString === "" || commandString === " " || commandString === null) {
-                    this.state.error = "You have to specify a name for the channel you want to join : \"/join newChannel\"";
-                } else if (false) {
-                    // If does not exist :
-                    this.state.error = "This channel does not exist : ";
-                } else {
-                    // JOIN CHANNEL DB + SOCKET.IO
-                    console.log("Join the channel with the name : " + commandString);
-                    this.setState({ channels: [...this.state.channels, commandString] });
-                    this.socket.emit('JOIN_ROOM', {
-                        room: commandString
-                    })
-                }
+                joinChannel(commandString);
 
             } else if (quitRegex.test(message)) {
                 commandString = message.slice(6);
-                if (commandString === "" || commandString === " " || commandString === null) {
-                    this.state.error = "You have to specify a name for the channel you want to quit : \"/quit newChannel\"";
-                } else if (false) {
-                    // If does not exist :
-                    this.state.error = "This channel does not exist : ";
-                } else if (false) {
-                    // If not part of this channel :
-                    this.state.error = "You are not part of this channel : ";
-                } else {
-                    // QUIT CHANNEL
-                    console.log("Quit the channel with the name : " + commandString + " if it exist and you joined it");
-                    this.state.channels.forEach(channel => {
-                        if (channel === commandString) {
-                            channel = null;
-                        }
-                    })
+                quitChannel(commandString);
 
-                }
             } else if (usersRegex.test(message)) {
                 commandString = message.slice(7);
                 // LIST ALL USERS
@@ -130,10 +90,6 @@ class Chat extends React.Component {
                     // SEND MESSAGE
                     console.log("Send \"" + messageToSend + "\" to the user with the name : " + nickToSend);
                 }
-
-
-
-
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 
@@ -147,6 +103,85 @@ class Chat extends React.Component {
             }
             this.setState({ message: '' });
         }
+
+        const createChannel = async name => {
+            if (name === "" || name === " " || name === null) {
+                this.state.error = "You have to specify a name for your new channel : \"/create newChannel\"";
+            } else if (name.length > 45) {
+                // If command pas bon format : 
+                this.state.error = "The name of the channel has to be less than 45 characters ";
+            } else {
+                // CREATE CHANNEL 
+                await axios.post("http://localhost:9000/api/channels", { name: name })
+                    .then(response => {
+                        if (response.status === 200) {
+                            this.state.success = "The channel \"" + name + "\" has been successfully created";
+                        } else {
+                            this.state.error = "The channel \"" + name + "\" couldn't be created";
+                        }
+                    });
+            }
+        }
+
+        const joinChannel = name => {
+                if (name === "" || name === " " || name === null) {
+                    this.state.error = "You have to specify a name for the channel you want to join : \"/join newChannel\"";
+                } else if (false) {
+                    // If does not exist :
+                    this.state.error = "This channel does not exist : " + name;
+                } else {
+                    // JOIN CHANNEL DB + SOCKET.IO
+                    this.setState({ channels: [...this.state.channels, name] });
+                    this.socket.emit('JOIN_ROOM', {
+                        room: name
+                    })
+                }
+        }
+
+        const deleteChannel = async name => {
+            if (name === "" || name === " " || name === null) {
+                this.state.error = "You have to specify a name for the channel you want to delete : \"/delete newChannel\"";
+            } else if (!this.state.channels.includes(name)) {
+                // If does not exist :
+                this.state.error = "You are cannot delete a channel you are not part of : " + name;
+            } else {
+                // DELETE CHANNEL
+                await fetch("http://localhost:9000/api/channels/" + name, {
+                    method: 'DELETE',
+                }).then(response => {
+                    if (response.status === 200) {
+                        this.socket.emit('DELETE_ROOM', {
+                            room: name
+                        })
+                        this.state.success = "The channel \"" + name + "\" has been successfully deleted";
+                    } else if (response.status === 404) {
+                        this.state.error = "The channel \"" + name + "\" couldn't be found";
+                    } else {
+                        this.state.error = "The channel \"" + name + "\" couldn't be deleted";
+                    }
+                });
+            }
+
+        }
+
+        const quitChannel = name => {
+            if (name === "" || name === " " || name === null) {
+                this.state.error = "You have to specify a name for the channel you want to quit : \"/quit newChannel\"";
+            } else if (!this.state.channels.includes(name)) {
+                // If not part of this channel :
+                this.state.error = "You are not part of this channel : " + name;
+            } else {
+                // QUIT CHANNEL
+                console.log("Quit the channel with the name : " + name + " if it exist and you joined it");
+                this.state.channels.splice(name, 1);
+                this.socket.emit('QUIT_ROOM', {
+                    room: name
+                })
+            }
+        }
+
+
+
     }
     render() {
         return (
@@ -169,24 +204,11 @@ class Chat extends React.Component {
                             <div className="card-footer">
                                 <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
                                 <div className="errorCommands">{this.state.error}</div>
+                                <div className="successCommands">{this.state.success}</div>
                                 <br />
                                 <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
                             </div>
                         </div>
-                    </div>
-                    <div className="channel">
-                        {this.state.channels.map(channel => {
-                            return (
-                                <div className={channel}>
-                                    <div className="card-footer">
-                                        <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
-                                        <div className="errorCommands">{this.state.error}</div>
-                                        <br />
-                                        <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
-                                    </div>
-                                </div>
-                            )
-                        })}
                     </div>
                 </div>
             </div>
