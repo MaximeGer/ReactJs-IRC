@@ -23,6 +23,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use("/testAPI", testAPIRouter);
+app.get("/messages", );
+
+app.get(`/messages/${id}`);
+
+app.post("/messages", data);
+
+app.put(`/messages/${id}`, data);
+
+app.delete(`/messages/${id}`);
+
+app.delete(`/messages`);
+
+app.get(`/messages?title=${title}`);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -40,5 +54,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const db = require("./models");
+db.sequelize.sync();
 
 module.exports = app;
