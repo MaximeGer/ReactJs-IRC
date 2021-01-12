@@ -135,13 +135,13 @@ class Chat extends React.Component {
                     this.state.error = "This channel does not exist : " + name;
                 } else {
                     // JOIN CHANNEL DB + SOCKET.IO
-                    console.log("Join the channel with the name : " + commandString);
+                    console.log("Join the channel with the name : " + name);
                     var div = document.createElement("div");
                     div.className = "row"
                     document.querySelector(".container").append(div)
                     const nodes = document.querySelectorAll(".row")
                     const last = nodes[nodes.length-1];
-                    const element = <Chat title="test"/>;
+                    const element = <Chat title={name}/>;
                     ReactDOM.render(element, last )
                     // React.createElement(element, document.querySelector("body"))
 					this.setState({ channels: [...this.state.channels, name] });
