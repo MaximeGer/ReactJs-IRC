@@ -9,6 +9,9 @@ var usersRouter = require('./routes/users');
 var testAPIRouter = require("./routes/testAPI");
 var app = express();
 
+require("./routes/messages")(app)
+require("./routes/channels")(app)
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,19 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use("/testAPI", testAPIRouter);
-app.get("/messages", );
-
-app.get(`/messages/${id}`);
-
-app.post("/messages", data);
-
-app.put(`/messages/${id}`, data);
-
-app.delete(`/messages/${id}`);
-
-app.delete(`/messages`);
-
-app.get(`/messages?title=${title}`);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
