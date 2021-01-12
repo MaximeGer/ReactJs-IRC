@@ -21,6 +21,7 @@ class Chat extends React.Component {
 
         const addMessage = data => {
             console.log(data);
+            
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
@@ -89,7 +90,7 @@ class Chat extends React.Component {
                     // JOIN CHANNEL DB + SOCKET.IO
                     console.log("Join the channel with the name : " + commandString);
                     this.setState({ channels: [...this.state.channels, commandString] });
-                    this.socket.emit('JOIN_ROOM',{
+                    this.socket.emit('JOIN_ROOM', {
                         room: commandString
                     })
                 }
@@ -172,6 +173,20 @@ class Chat extends React.Component {
                                 <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
                             </div>
                         </div>
+                    </div>
+                    <div className="channel">
+                        {this.state.channels.map(channel => {
+                            return (
+                                <div className={channel}>
+                                    <div className="card-footer">
+                                        <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+                                        <div className="errorCommands">{this.state.error}</div>
+                                        <br />
+                                        <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </div>
