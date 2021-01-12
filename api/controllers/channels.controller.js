@@ -3,7 +3,6 @@ const Channel = db.channels;
 
 // Create and Save a new Channel
 exports.create = (req, res) => {
-    console.log(req.body);
     // Validate request
     if (!req.body.name) {
         res.status(400).send({

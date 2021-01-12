@@ -9,8 +9,6 @@ var usersRouter = require('./routes/users');
 var testAPIRouter = require("./routes/testAPI");
 var app = express();
 
-require("./routes/messages")(app)
-require("./routes/channels")(app)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +21,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+const db = require("./models");
+db.sequelize.sync();
+
+require("./routes/messages")(app)
+require("./routes/channels")(app)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use("/testAPI", testAPIRouter);
@@ -44,8 +48,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-const db = require("./models");
-db.sequelize.sync();
 
 module.exports = app;
