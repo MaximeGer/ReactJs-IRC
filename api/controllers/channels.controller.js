@@ -1,5 +1,6 @@
 const db = require("../models");
 const Channel = db.channels;
+const Op = db.Sequelize.Op;
 
 // Create and Save a new Channel
 exports.create = (req, res) => {
@@ -63,15 +64,23 @@ exports.findById = (req, res) => {
 
 // Find a single Channel with an id
 exports.findByName = (req, res) => {
-    const id = req.params.id;
+    const name = req.params.name;
+    var condition = name ? { name: { [Op.eq]: `${name}` } } : null;
 
-    Channel.findByPk(id)
+    Channel.findAll({where: condition})
         .then(data => {
-            res.send(data);
+            if(data == null || data == ""){
+                res.status(404).send({
+                    message: "Channel couldn't be found"
+                });
+            }
+            else{
+                res.send(data);
+            }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Channel with name=" + id
+                message: "Error retrieving Channel with name=" + name
             });
         });
 };
