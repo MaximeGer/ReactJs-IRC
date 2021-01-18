@@ -1,6 +1,5 @@
 import React from "react";
 import io from "socket.io-client";
-import axios from "axios";
 
 class Channel extends React.Component {
     constructor(props) {

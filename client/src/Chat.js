@@ -125,13 +125,24 @@ class Chat extends React.Component {
             }
         }
 
-        const joinChannel = name => {
-
-
+        const joinChannel = async name => {
+            var channelExists = false;
+            await fetch("http://localhost:9000/api/channels/" + name, {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.status === 200) {
+                        this.state.success = "The channel \"" + name + "\" has been successfully joined";
+                        channelExists = true;
+                    } else if (response.status === 404) {
+                        this.state.error = "The channel \"" + name + "\" couldn't be found";
+                    } else {
+                        this.state.error = "The channel \"" + name + "\" couldn't be joined";
+                    }
+                });
 
             if (name === "" || name === " " || name === null) {
                 this.state.error = "You have to specify a name for the channel you want to join : \"/join newChannel\"";
-            } else if (false) {
+            } else if (!channelExists) {
                 // If does not exist :
                 this.state.error = "This channel does not exist : " + name;
             } else {
@@ -146,9 +157,6 @@ class Chat extends React.Component {
                 ReactDOM.render(element, last)
                 // React.createElement(element, document.querySelector("body"))
                 this.setState({ channels: [...this.state.channels, name] });
-                // this.socket.emit('JOIN_ROOM', {
-                //     room: name
-                // })
             }
         }
 
@@ -164,6 +172,8 @@ class Chat extends React.Component {
                     method: 'DELETE',
                 }).then(response => {
                     if (response.status === 200) {
+                        
+                        quitChannel(name);
                         this.socket.emit('DELETE_ROOM', {
                             room: name
                         })
