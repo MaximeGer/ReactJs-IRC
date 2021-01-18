@@ -20,7 +20,7 @@ class Chat extends React.Component {
 
         this.socket = io('localhost:9000');
 
-        this.socket.on('JOIN_ROOM', {
+        this.socket.emit('JOIN_ROOM', {
             room: this.state.title
         })
 

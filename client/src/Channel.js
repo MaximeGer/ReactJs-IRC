@@ -14,6 +14,8 @@ class Channel extends React.Component {
         this.socket = io('localhost:9000');
 
         this.socket.on('RECEIVE_MESSAGE', function (data) {
+            console.log(data)
+
             addMessage(data);
         });
 

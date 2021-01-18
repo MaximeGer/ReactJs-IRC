@@ -41,6 +41,9 @@ io.on('connection', (socket) => {
   console.log(`Connecté au client ${socket.id}`)
 
   socket.on('SEND_MESSAGE', function (data) {
+    console.log("room =" +data.room)
+    console.log("datas" + data)
+
     io.to(data.room).emit('RECEIVE_MESSAGE', data);
   })
 
