@@ -7,8 +7,9 @@ import {socket} from "../service/socket";
 class Chat extends React.Component {
     constructor(props) {
         super(props);
-        this.state  = {
-            username: '',
+
+        this.state = {
+            username: 'anonymous',
             message: '',
             error: '',
             success: '',
@@ -59,7 +60,15 @@ class Chat extends React.Component {
 
             if (nickRegex.test(message)) {
                 this.state.username = message.slice(6);
-
+                console.log(this.state.elements)
+                this.state.elements.forEach(element => {
+                    console.log(element)
+                    element._self.state.username = this.state.username;
+                })
+                // for(var room in this.state.elements){
+                //     console.log(room)
+                // }
+                
             } else if (listRegex.test(message)) {
                 var name = message.slice(6);
                 socket.emit('SHOW_ROOM', {
@@ -176,7 +185,9 @@ class Chat extends React.Component {
                 document.querySelector(".container").append(div)
                 const nodes = document.querySelectorAll(".row")
                 const last = nodes[nodes.length - 1];
-                const element = <Channel title={name} onSetUpId={handleNewChildId}/>;
+
+                const element = <Channel title={name} username={this.state.username} onSetUpId={handleNewChildId}/>;
+
                 ReactDOM.render(element, last)
                 //this.setState({ elements: [...this.state.elements, element] });
 

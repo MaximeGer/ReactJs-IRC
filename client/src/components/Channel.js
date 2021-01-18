@@ -6,12 +6,12 @@ class Channel extends React.Component {
         super(props);
 
         this.state = {
-            username: '',
+            username: this.props.username,
             message: '',
             messages: [],
             title: this.props.title
         };
-
+        
         const socket = io('localhost:9000');
 
         socket.emit("JOIN_ROOM", {
@@ -22,6 +22,7 @@ class Channel extends React.Component {
         socket.on('connect', () => {
             console.log(socket.id)
             this.props.onSetUpId(socket.id)
+
         });
 
         socket.on('RECEIVE_MESSAGE', function (data) {
