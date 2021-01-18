@@ -135,6 +135,8 @@ class Chat extends React.Component {
                         } else {
                             this.state.error = "The channel \"" + name + "\" couldn't be created";
                         }
+                    }).catch(err =>{
+                        this.state.error = "The channel \"" + name + "\" couldn't be created";
                     });
             }
         }
@@ -157,6 +159,8 @@ class Chat extends React.Component {
                     } else {
                         this.state.error = "The channel \"" + name + "\" couldn't be joined";
                     }
+                }).catch(err => {
+                    this.state.error = "The channel \"" + name + "\" couldn't be joined";
                 });
 
             if (name === "" || name === " " || name === null) {
@@ -190,7 +194,7 @@ class Chat extends React.Component {
                 this.state.error = "You are cannot delete a channel you are not part of : " + name;
             } else {
                 // DELETE CHANNEL
-                await fetch("http://localhost:9000/api/channels/byName/" + name, {
+                await fetch("http://localhost:9000/api/channels/" + name, {
                     method: 'DELETE',
                 }).then(response => {
                     if (response.status === 200) {

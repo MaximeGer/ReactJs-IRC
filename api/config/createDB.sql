@@ -27,8 +27,9 @@ DROP TABLE IF EXISTS `channels`;
 CREATE TABLE `channels` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,6 +38,7 @@ CREATE TABLE `channels` (
 
 LOCK TABLES `channels` WRITE;
 /*!40000 ALTER TABLE `channels` DISABLE KEYS */;
+INSERT INTO `channels` VALUES (4,'Global Chat'),(8,'lol'),(3,'test'),(6,'test1');
 /*!40000 ALTER TABLE `channels` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,7 +56,7 @@ CREATE TABLE `messages` (
   PRIMARY KEY (`id`),
   KEY `idchannel_idx` (`idchannel`),
   CONSTRAINT `fkidchannel` FOREIGN KEY (`idchannel`) REFERENCES `channels` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,4 +77,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-12 10:29:31
+-- Dump completed on 2021-01-18 11:51:46
