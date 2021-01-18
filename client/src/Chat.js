@@ -136,7 +136,7 @@ class Chat extends React.Component {
 
         const joinChannel = async name => {
             var channelExists = false;
-            await fetch("http://localhost:9000/api/channels/byName" + name, {
+            await fetch("http://localhost:9000/api/channels/byName/" + name, {
                     method: 'GET',
                 }).then(response => {
                     if (response.status === 200) {
