@@ -26,6 +26,12 @@ class Chat extends React.Component {
             );
         }
 
+        const handleNewChildId = (newId, nameChannel) => {
+            const addIdToChannel = this.state.channels;
+            addIdToChannel.set(nameChannel, newId)
+            this.setState({ channels: addIdToChannel})
+        }
+
         socket.emit('JOIN_ROOM', {
             room: this.state.title
         })
@@ -162,11 +168,6 @@ class Chat extends React.Component {
             }
         }
         
-        const handleNewChildId = (newId, nameChannel) => {
-            const addIdToChannel = this.state.channels;
-            addIdToChannel.set(nameChannel, newId)
-            this.setState({ channels: addIdToChannel})
-        }
 
         const joinChannel = async name => {
             var channelExists = false;
