@@ -179,7 +179,7 @@ class Chat extends React.Component {
                 this.state.error = "You are cannot delete a channel you are not part of : " + name;
             } else {
                 // DELETE CHANNEL
-                await fetch("http://localhost:9000/api/channels/byName/" + name, {
+                await fetch("http://localhost:9000/api/channels/" + name, {
                     method: 'DELETE',
                 }).then(response => {
                     if (response.status === 200) {
