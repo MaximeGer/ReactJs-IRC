@@ -14,8 +14,7 @@ class Chat extends React.Component {
             error: '',
             success: '',
             socketId:'',
-            childIds: [],
-            channels: [],
+            channels: new Map(),
             messages: [],
             title: "Global Chat"
         };
@@ -24,10 +23,13 @@ class Chat extends React.Component {
             room: this.state.title
         })
 
-        socket.on('connect', () => {
-            console.log(socket.id)
-            //this.state.socketId = this.socket.sessionID; 
-        });
+        socket.on('ROOM_DELETED', (name) => {
+            console.log("dscuysdgvhhdgvbsjhdsvgbjkluhsdfvghbljkdfvsbklujdfbvhjkldfb")
+            if(document.getElementById('Channel name : ' + name)){
+                document.getElementById('Channel name : ' + name).remove();
+            }
+        })
+
         
         socket.on('RECEIVE_MESSAGE', function (data) {
             addMessage(data);
@@ -35,7 +37,6 @@ class Chat extends React.Component {
         
         const addMessage = data => {
             console.log(data);
-        
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
@@ -65,9 +66,6 @@ class Chat extends React.Component {
                     console.log(element)
                     element._self.state.username = this.state.username;
                 })
-                // for(var room in this.state.elements){
-                //     console.log(room)
-                // }
                 
             } else if (listRegex.test(message)) {
                 var name = message.slice(6);
@@ -151,8 +149,10 @@ class Chat extends React.Component {
         }
 
         
-        const handleNewChildId = (newId) => {
-            this.setState({ childIds: [...this.state.childIds, newId] })
+        const handleNewChildId = (newId, nameChannel) => {
+            const addIdToChannel = this.state.channels;
+            addIdToChannel.set(nameChannel, newId)
+            this.setState({ channels: addIdToChannel})
         }
 
         const joinChannel = async name => {
@@ -182,6 +182,7 @@ class Chat extends React.Component {
                 console.log("Join the channel with the name : " + name);
                 var div = document.createElement("div");
                 div.className = "row"
+                
                 document.querySelector(".container").append(div)
                 const nodes = document.querySelectorAll(".row")
                 const last = nodes[nodes.length - 1];
@@ -191,8 +192,13 @@ class Chat extends React.Component {
                 ReactDOM.render(element, last)
                 //this.setState({ elements: [...this.state.elements, element] });
 
+                var test = new Map(this.state.channels);
+                test.set(name, "");
+
                 // React.createElement(element, document.querySelector("body"))
-                this.setState({ channels: [...this.state.channels, name] });
+                this.setState({ channels:  test });
+                console.log(this.state.channels)
+
             }
         }
 
@@ -200,7 +206,7 @@ class Chat extends React.Component {
         const deleteChannel = async name => {
             if (name === "" || name === " " || name === null) {
                 this.state.error = "You have to specify a name for the channel you want to delete : \"/delete newChannel\"";
-            } else if (!this.state.channels.includes(name)) {
+            } else if (!this.state.channels.get(name)) {
                 // If does not exist :
                 this.state.error = "You are cannot delete a channel you are not part of : " + name;
             } else {
@@ -222,25 +228,26 @@ class Chat extends React.Component {
                     }
                 });
             }
-
         }
 
         const quitChannel = name => {
             if (name === "" || name === " " || name === null) {
                 this.state.error = "You have to specify a name for the channel you want to quit : \"/quit newChannel\"";
-            } else if (!this.state.channels.includes(name)) {
+            } else if (!this.state.channels.get(name)) {
                 // If not part of this channel :
                 this.state.error = "You are not part of this channel : " + name;
             } else {
                 // QUIT CHANNEL
                 console.log("Quit the channel with the name : " + name + " if it exist and you joined it");
-                this.state.channels.splice(name, 1);
-                this.state.channels.splice(name, 1);
-                console.log(this.state.childIds)
+                //this.state.channels.splice(name, 1);
 
-                for(var yo in this.state.childIds){
-                    console.log(yo)
-                }
+                var idToDisconnect = this.state.channels.get(name);
+                socket.emit('DISCONNECT_USER', {
+                    id: idToDisconnect
+                })
+
+                this.state.channels.delete(name);
+
             }
         }
 

@@ -18,22 +18,17 @@ class Channel extends React.Component {
             room: this.props.title
         })
 
-
+        
         socket.on('connect', () => {
-            console.log(socket.id)
-            this.props.onSetUpId(socket.id)
-
+            this.props.onSetUpId(socket.id, this.props.title)
         });
 
         socket.on('RECEIVE_MESSAGE', function (data) {
             addMessage(data);
-            console.log(props);
-
         });
+
         const addMessage = data => {
             console.log(data);
-            console.log(socket.id)
-
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
@@ -72,7 +67,7 @@ class Channel extends React.Component {
     }
     render() {
         return (
-            <div className="col-4">
+            <div className="col-4" id= {'Channel name : '+ this.state.title}>
                 <div className="card">
                     <div className="card-body">
                         <div className="card-title">{this.state.title}</div>
