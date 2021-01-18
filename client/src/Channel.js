@@ -21,12 +21,19 @@ class Channel extends React.Component {
         this.socket.emit("JOIN_ROOM", {
             room: this.state.title
         })
+
         const addMessage = data => {
             console.log(data);
 
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
+
+        const quitRoom = name => {
+            this.socket.emit('QUIT_ROOM', {
+                room: name
+            })
+        }
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -53,6 +60,9 @@ class Channel extends React.Component {
                 this.socket.emit('SEND_MESSAGE', {
                     author: this.state.username,
                     message: message,
+                    room: this.state.title
+                })
+                this.socket.emit('SHOW_ROOM', {
                     room: this.state.title
                 })
 

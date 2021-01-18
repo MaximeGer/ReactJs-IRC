@@ -12,6 +12,7 @@ class Chat extends React.Component {
             message: '',
             error: '',
             success: '',
+            elements: [],
             channels: [],
             messages: [],
             title: this.props.title || "Global Chat"
@@ -51,6 +52,10 @@ class Chat extends React.Component {
                 this.state.username = message.slice(6);
 
             } else if (listRegex.test(message)) {
+                var name = message.slice(6);
+                this.socket.emit('SHOW_ROOM', {
+                    room: name
+                })
                 commandString = message.slice(6);
                 if (commandString === "" || commandString === " " || commandString === null) {
                     // DISPLAY ALL CHANNEL
@@ -144,6 +149,8 @@ class Chat extends React.Component {
                 const last = nodes[nodes.length - 1];
                 const element = <Channel title={name} />;
                 ReactDOM.render(element, last)
+                this.setState({ elements: [...this.state.elements, element] });
+
                 // React.createElement(element, document.querySelector("body"))
                 this.setState({ channels: [...this.state.channels, name] });
                 // this.socket.emit('JOIN_ROOM', {
@@ -188,9 +195,10 @@ class Chat extends React.Component {
                 // QUIT CHANNEL
                 console.log("Quit the channel with the name : " + name + " if it exist and you joined it");
                 this.state.channels.splice(name, 1);
-                this.socket.emit('QUIT_ROOM', {
-                    room: name
-                })
+                console.log(this.state.elements)
+                for(var yo in this.state.elements){
+                    console.log(yo)
+                }
             }
         }
 
