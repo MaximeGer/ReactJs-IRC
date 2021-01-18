@@ -14,12 +14,17 @@ class Chat extends React.Component {
             success: '',
             channels: [],
             messages: [],
-            title: this.props.title || "Global Chat"
+            title: "Global Chat"
         };
 
         this.socket = io('localhost:9000');
 
+        this.socket.on('JOIN_ROOM', {
+            room: this.state.title
+        })
+
         this.socket.on('RECEIVE_MESSAGE', function (data) {
+            console.log(data)
             addMessage(data);
         });
 
@@ -98,9 +103,8 @@ class Chat extends React.Component {
                 this.socket.emit('SEND_MESSAGE', {
                     author: this.state.username,
                     message: message,
-                    rooms: this.state.channels
+                    room: this.state.title
                 })
-                console.log("channels : " + this.state.channels);
 
             }
             this.setState({ message: '' });
@@ -127,7 +131,7 @@ class Chat extends React.Component {
 
         const joinChannel = async name => {
             var channelExists = false;
-            await fetch("http://localhost:9000/api/channels/" + name, {
+            await fetch("http://localhost:9000/api/channels/byName" + name, {
                     method: 'GET',
                 }).then(response => {
                     if (response.status === 200) {
@@ -168,7 +172,7 @@ class Chat extends React.Component {
                 this.state.error = "You are cannot delete a channel you are not part of : " + name;
             } else {
                 // DELETE CHANNEL
-                await fetch("http://localhost:9000/api/channels/" + name, {
+                await fetch("http://localhost:9000/api/channels/byName/" + name, {
                     method: 'DELETE',
                 }).then(response => {
                     if (response.status === 200) {

@@ -8,7 +8,7 @@ class Channel extends React.Component {
             username: '',
             message: '',
             messages: [],
-            title: this.props.title || "Global Chat",
+            title: this.props.title,
         };
 
         this.socket = io('localhost:9000');
