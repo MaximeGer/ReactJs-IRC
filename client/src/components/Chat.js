@@ -1,40 +1,44 @@
 import React from "react";
 import ReactDOM from 'react-dom'
-import io from "socket.io-client";
 import axios from "axios";
 import Channel from "./Channel";
+import {socket} from "../service/socket";
 
 class Chat extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state  = {
             username: '',
             message: '',
             error: '',
             success: '',
-            elements: [],
+            socketId:'',
+            childIds: [],
             channels: [],
             messages: [],
             title: "Global Chat"
         };
 
-        this.socket = io('localhost:9000');
-
-        this.socket.emit('JOIN_ROOM', {
+        socket.emit('JOIN_ROOM', {
             room: this.state.title
         })
 
-        this.socket.on('RECEIVE_MESSAGE', function (data) {
-            console.log(data)
+        socket.on('connect', () => {
+            console.log(socket.id)
+            //this.state.socketId = this.socket.sessionID; 
+        });
+        
+        socket.on('RECEIVE_MESSAGE', function (data) {
             addMessage(data);
         });
-
+        
         const addMessage = data => {
             console.log(data);
-
+        
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
+        
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -58,7 +62,7 @@ class Chat extends React.Component {
 
             } else if (listRegex.test(message)) {
                 var name = message.slice(6);
-                this.socket.emit('SHOW_ROOM', {
+                socket.emit('SHOW_ROOM', {
                     room: name
                 })
                 commandString = message.slice(6);
@@ -105,11 +109,12 @@ class Chat extends React.Component {
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 
-                this.socket.emit('SEND_MESSAGE', {
+                socket.emit('SEND_MESSAGE', {
                     author: this.state.username,
                     message: message,
                     room: this.state.title
                 })
+                
 
             }
             this.setState({ message: '' });
@@ -132,6 +137,11 @@ class Chat extends React.Component {
                         }
                     });
             }
+        }
+
+        
+        const handleNewChildId = (newId) => {
+            this.setState({ childIds: [...this.state.childIds, newId] })
         }
 
         const joinChannel = async name => {
@@ -162,14 +172,15 @@ class Chat extends React.Component {
                 document.querySelector(".container").append(div)
                 const nodes = document.querySelectorAll(".row")
                 const last = nodes[nodes.length - 1];
-                const element = <Channel title={name} />;
+                const element = <Channel title={name} onSetUpId={handleNewChildId}/>;
                 ReactDOM.render(element, last)
-                this.setState({ elements: [...this.state.elements, element] });
+                //this.setState({ elements: [...this.state.elements, element] });
 
                 // React.createElement(element, document.querySelector("body"))
                 this.setState({ channels: [...this.state.channels, name] });
             }
         }
+
 
         const deleteChannel = async name => {
             if (name === "" || name === " " || name === null) {
@@ -185,7 +196,7 @@ class Chat extends React.Component {
                     if (response.status === 200) {
                         
                         quitChannel(name);
-                        this.socket.emit('DELETE_ROOM', {
+                        socket.emit('DELETE_ROOM', {
                             room: name
                         })
                         this.state.success = "The channel \"" + name + "\" has been successfully deleted";
@@ -209,8 +220,10 @@ class Chat extends React.Component {
                 // QUIT CHANNEL
                 console.log("Quit the channel with the name : " + name + " if it exist and you joined it");
                 this.state.channels.splice(name, 1);
-                console.log(this.state.elements)
-                for(var yo in this.state.elements){
+                this.state.channels.splice(name, 1);
+                console.log(this.state.childIds)
+
+                for(var yo in this.state.childIds){
                     console.log(yo)
                 }
             }

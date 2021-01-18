@@ -4,37 +4,39 @@ import io from "socket.io-client";
 class Channel extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             username: '',
             message: '',
             messages: [],
-            title: this.props.title,
+            title: this.props.title
         };
 
-        this.socket = io('localhost:9000');
+        const socket = io('localhost:9000');
 
-        this.socket.on('RECEIVE_MESSAGE', function (data) {
-            console.log(data)
-
-            addMessage(data);
-        });
-
-        this.socket.emit("JOIN_ROOM", {
-            room: this.state.title
+        socket.emit("JOIN_ROOM", {
+            room: this.props.title
         })
 
+
+        socket.on('connect', () => {
+            console.log(socket.id)
+            this.props.onSetUpId(socket.id)
+        });
+
+        socket.on('RECEIVE_MESSAGE', function (data) {
+            addMessage(data);
+            console.log(props);
+
+        });
         const addMessage = data => {
             console.log(data);
+            console.log(socket.id)
 
             this.setState({ messages: [...this.state.messages, data] });
             //console.log(this.state.messages);
         };
 
-        const quitRoom = name => {
-            this.socket.emit('QUIT_ROOM', {
-                room: name
-            })
-        }
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -58,15 +60,11 @@ class Channel extends React.Component {
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 
-                this.socket.emit('SEND_MESSAGE', {
+                socket.emit('SEND_MESSAGE', {
                     author: this.state.username,
                     message: message,
                     room: this.state.title
                 })
-                this.socket.emit('SHOW_ROOM', {
-                    room: this.state.title
-                })
-
             }
             this.setState({ message: '' });
         }
