@@ -10,10 +10,10 @@ module.exports = app => {
     router.get("/", channels.findAll);
   
     // Retrieve a single Channel with id
-    router.get("/:id", channels.findById);
+    router.get("/byID/:id", channels.findById);
 
     // Retrieve a single Channel with id
-    router.get("/:name", channels.findByName);
+    router.get("/byName/:name", channels.findByName);
   
     // Update a Channel with id
     router.put("/:id", channels.update);
