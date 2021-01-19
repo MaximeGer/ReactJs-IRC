@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from 'react-dom'
+import changeNick from "../commands/changeNick"
 import createChannel from "../commands/createChannel"
 import joinChannel from "../commands/joinChannel"
 import deleteChannel from "../commands/deleteChannel"
@@ -24,8 +24,6 @@ class Chat extends React.Component {
     }
 
     componentDidMount() {
-
-
         socket.emit('JOIN_ROOM', {
             room: this.state.title,
             username: this.state.username
@@ -91,13 +89,8 @@ class Chat extends React.Component {
 
             if (nickRegex.test(message)) {
                 commandString= message.slice(6);
-
-                var newName = commandString;
-                this.setState({ username: newName });
-                socket.emit('SET_NEW_USERNAME',{
-                    newUsername:newName
-                })
-
+                changeNick(commandString, this, socket);
+                
             } else if (listRegex.test(message)) {
                 commandString = message.slice(6);
                 if (commandString === "" || commandString === " " || commandString === null) {

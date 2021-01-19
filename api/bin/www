@@ -96,8 +96,11 @@ io.on('connection', (socket) => {
   })
 
   socket.on('SET_NEW_USERNAME', function (data) {
+
     getConnectedSockets().forEach(function (s) {
       if(s.handshake.parentId == socket.id){
+        console.log(s)
+
         s.handshake.username = data.newName;
         socket.to(s).emit('RECIEVE_NEW_USERNAME', {
           username:data.newName 

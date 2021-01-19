@@ -34,8 +34,6 @@ class Channel extends React.Component {
         };
 
         socket.on('RECEIVE_USERS', function (data) {
-            console.log(data.listUsers)
-            //this.setState({ messages: [...this.state.messages, 'Users on the channel :'] });
             addMessage({
                 author: "System",
                 message: "list of all users on the channel : ",
@@ -57,7 +55,7 @@ class Channel extends React.Component {
         })
 
         socket.on('RECIEVE_NEW_USERNAME', (newUsername) => {
-            console.log("yolo'");
+            console.log("yolo'azazaz");
             this.setState({username:newUsername})
         })
 
