@@ -16,6 +16,7 @@ class Channel extends React.Component {
 
         socket.emit("JOIN_ROOM", {
             room: this.props.title,
+            username:this.state.username,
             parentId: this.props.parentId
         })
 
@@ -27,40 +28,38 @@ class Channel extends React.Component {
         socket.on('RECEIVE_MESSAGE', function (data) {
             addMessage(data);
         });
+        
+        const addMessage = data => {
+            this.setState({ messages: [...this.state.messages, data] });
+        };
+
+        socket.on('RECEIVE_USERS', function (data) {
+            console.log(data)
+            Array.from(data).forEach(function (username){
+                console.log(username)
+                this.setState({ messages: [...this.state.messages, username] });
+            })
+        });
 
         socket.on('ROOM_DELETED', (name) => {
-            console.log("dscuysdgvhhdgvbsjhdsvgbjkluhsdfvghbljkdfvsbklujdfbvhjkldfb   " + name)
             if(document.getElementById('Channel name : ' + name)){
                 document.getElementById('Channel name : ' + name).remove();
             }
         })
-
-        const addMessage = data => {
-            console.log(data);
-            this.setState({ messages: [...this.state.messages, data] });
-            //console.log(this.state.messages);
-        };
 
 
         this.sendMessage = ev => {
             ev.preventDefault();
 
             var message = this.state.message;
-            var listRegex = new RegExp("^/list");
+            var usersRegex = new RegExp("^/users");
 
-            var commandString = "";
-
-            if (listRegex.test(message)) {
-                commandString = message.slice(6);
-                if (commandString === "" || commandString === " " || commandString === null) {
-                    // DISPLAY ALL CHANNEL
-                    console.log("Display all channel available " + commandString);
-                    // TODO Display all channel available
-                } else {
-                    // DISPLAY ALL CHANNEL OF A STRING
-                    console.log("Display all channel available according to the string : " + commandString);
-                    // TODO Display all channel available according to a string
-                }
+            if (usersRegex.test(message)) {
+                // LIST ALL USERS
+                console.log("List users on the channel");
+                socket.emit('ASK_USERS', {
+                    room: this.state.title
+                })
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 
