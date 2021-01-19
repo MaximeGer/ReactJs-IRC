@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from 'react-dom'
-import axios from "axios";
+import createChannel from "../commands/createChannel"
+import joinChannel from "../commands/joinChannel"
+import deleteChannel from "../commands/deleteChannel"
+import quitChannel from "../commands/quitChannel"
 import Channel from "./Channel";
 import { socket } from "../service/socket";
 
@@ -111,19 +114,19 @@ class Chat extends React.Component {
                 }
             } else if (createRegex.test(message)) {
                 commandString = message.slice(8);
-                createChannel(commandString);
+                createChannel(commandString, this);
 
             } else if (deleteRegex.test(message)) {
                 commandString = message.slice(8);
-                deleteChannel(commandString);
+                deleteChannel(commandString, this, socket);
 
             } else if (joinRegex.test(message)) {
                 commandString = message.slice(6);
-                joinChannel(commandString);
+                joinChannel(commandString, this);
 
             } else if (quitRegex.test(message)) {
                 commandString = message.slice(6);
-                quitChannel(commandString);
+                quitChannel(commandString, this, socket);
 
             } else if (usersRegex.test(message)) {
                 showUsers(this.state.title);
@@ -151,128 +154,6 @@ class Chat extends React.Component {
 
             }
             this.setState({ message: '' });
-        }
-
-
-        const createChannel = async name => {
-            if (name === "" || name === " " || name === null) {
-                this.setState({ error: "You have to specify a name for your new channel : \"/create newChannel\"" });
-            } else if (name.length > 45) {
-                // If command pas bon format : 
-                this.setState({ error: "The name of the channel has to be less than 45 characters " });
-            } else {
-                // CREATE CHANNEL 
-                await axios.post("http://localhost:9000/api/channels", { name: name })
-                    .then(response => {
-                        if (response.status === 200) {
-                            this.setState({ success: "The channel \"" + name + "\" has been successfully created" });
-                        } else {
-                            this.setState({ error: "The channel \"" + name + "\" couldn't be created" });
-                        }
-                    }).catch(err => {
-                        this.setState({ error: "The channel \"" + name + "\" couldn't be created" });
-                    });
-            }
-        }
-
-
-        const joinChannel = async name => {
-            var channelExists = false;
-            var id;
-            await fetch("http://localhost:9000/api/channels/byName/" + name, {
-                method: 'GET',
-            }).then(response => {
-                if (response.status === 200) {
-                    this.setState({ success: "The channel \"" + name + "\" has been successfully joined" });
-                    channelExists = true;
-                    id = response.id;
-                } else if (response.status === 404) {
-                    this.setState({ error: "The channel \"" + name + "\" couldn't be found" });
-                } else {
-                    this.setState({ error: "The channel \"" + name + "\" couldn't be joined" });
-                }
-            }).catch(err => {
-                this.setState({ error: "The channel \"" + name + "\" couldn't be joined" });
-            });
-
-            if (name === "" || name === " " || name === null) {
-                this.setState({ error: "You have to specify a name for the channel you want to join : \"/join newChannel\"" });
-            } else if (!channelExists) {
-                // If does not exist :
-                this.setState({ error: "This channel does not exist : " + name });
-            } else {
-                // JOIN CHANNEL DB + SOCKET.IO
-                console.log("Join the channel with the name : " + name);
-                var div = document.createElement("div");
-                div.className = "row"
-
-                document.querySelector(".container").append(div)
-                const nodes = document.querySelectorAll(".row")
-                const last = nodes[nodes.length - 1];
-
-                const element = this.renderChannel(name, id);
-
-                ReactDOM.render(element, last)
-                //this.setState({ elements: [...this.state.elements, element] });
-                this.setState({ elements: [...this.state.elements, element] });
-
-                var test = new Map(this.state.channels);
-                test.set(name, "");
-
-                // React.createElement(element, document.querySelector("body"))
-                this.setState({ channels: test });
-                console.log(this.state.channels)
-
-            }
-        }
-
-
-        const deleteChannel = async name => {
-            if (name === "" || name === " " || name === null) {
-                this.setState({ error: "You have to specify a name for the channel you want to delete : \"/delete newChannel\"" });
-            } else if (!this.state.channels.get(name)) {
-                // If does not exist :
-                this.setState({ error: "You are cannot delete a channel you are not part of : " + name });
-            } else {
-                // DELETE CHANNEL
-                await fetch("http://localhost:9000/api/channels/" + name, {
-                    method: 'DELETE',
-                }).then(response => {
-                    if (response.status === 200) {
-
-                        quitChannel(name);
-                        socket.emit('DELETE_ROOM', {
-                            room: name
-                        })
-                        this.setState({ success: "The channel \"" + name + "\" has been successfully deleted" });
-                    } else if (response.status === 404) {
-                        this.setState({ error: "The channel \"" + name + "\" couldn't be found" });
-                    } else {
-                        this.setState({ error: "The channel \"" + name + "\" couldn't be deleted" });
-                    }
-                });
-            }
-        }
-
-        const quitChannel = name => {
-            if (name === "" || name === " " || name === null) {
-                this.setState({ error: "You have to specify a name for the channel you want to quit : \"/quit newChannel\"" });
-            } else if (!this.state.channels.get(name)) {
-                // If not part of this channel :
-                this.setState({ error: "You are not part of this channel : " + name });
-            } else {
-                // QUIT CHANNEL
-                console.log("Quit the channel with the name : " + name + " if it exist and you joined it");
-                //this.state.channels.splice(name, 1);
-
-                var idToDisconnect = this.state.channels.get(name);
-                socket.emit('QUIT_ROOM', {
-                    id: idToDisconnect,
-                    room: name
-                })
-
-                this.state.channels.delete(name);
-            }
         }
 
         const showUsers = roomName => {
