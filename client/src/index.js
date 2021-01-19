@@ -11,7 +11,7 @@ ReactDOM.render(
   <React.StrictMode>
     <div className="container">
       <div className="row"> 
-        <Chat />
+        <Chat key={Math.random()*10}/>
       </div>
     </div>
   </React.StrictMode>,
