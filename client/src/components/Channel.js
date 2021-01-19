@@ -31,8 +31,14 @@ class Channel extends React.Component {
                 document.getElementById('Channel name : ' + name).remove();
             }
         })
-
+     
         commonReceiveFunctions(socket, this);
+
+        socket.on('RECIEVE_NEW_USERNAME', (newUsername) => {
+            console.log("yolo'azazaz");
+            this.setState({username:newUsername})
+        })
+
 
 
         this.sendMessage = ev => {

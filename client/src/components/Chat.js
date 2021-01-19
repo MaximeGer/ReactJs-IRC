@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from 'react-dom'
+import changeNick from "../commands/changeNick"
 import createChannel from "../commands/createChannel"
 import joinChannel from "../commands/joinChannel"
 import deleteChannel from "../commands/deleteChannel"
@@ -21,24 +21,11 @@ class Chat extends React.Component {
             socketId: '',
             channels: new Map(),
             messages: [],
-            elements: [],
             title: "Global Chat"
         };
     }
 
     componentDidMount() {
-        this.renderChannel = (name, id) => {
-            return (
-                <Channel key={id} title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
-            );
-        }
-
-        const handleNewChildId = (newId, nameChannel) => {
-            const addIdToChannel = this.state.channels;
-            addIdToChannel.set(nameChannel, newId)
-            this.setState({ channels: addIdToChannel })
-        }
-
         socket.emit('JOIN_ROOM', {
             room: this.state.title,
             username: this.state.username
@@ -51,6 +38,18 @@ class Chat extends React.Component {
         })
 
        commonReceiveFunctions(socket, this);
+
+        this.renderChannel = (name, id) => {
+            return (
+                <Channel key={id} title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
+            );
+        }
+
+        const handleNewChildId = (newId, nameChannel) => {
+            const addIdToChannel = this.state.channels;
+            addIdToChannel.set(nameChannel, newId)
+            this.setState({ channels: addIdToChannel })
+        }
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -70,14 +69,9 @@ class Chat extends React.Component {
             this.setState({ success: "" });
 
             if (nickRegex.test(message)) {
-                this.setState({ username: message.slice(6) });
-                const nodes = document.querySelectorAll(".row")
-                const last = nodes[nodes.length - 1];
-                this.state.elements.forEach(element => {
-                    element._self.state.username = this.state.username
-                    ReactDOM.render(this.renderChannel(element._self.state.title), last)
-                })
-
+                commandString= message.slice(6);
+                changeNick(commandString, this, socket);
+                
             } else if (listRegex.test(message)) {
                 commandString = message.slice(6);
                 if (commandString === "" || commandString === " " || commandString === null) {

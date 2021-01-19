@@ -38,8 +38,6 @@ const joinChannel = async (name, Chat) => {
         const element = Chat.renderChannel(name, id);
 
         ReactDOM.render(element, last)
-        //Chat.setState({ elements: [...Chat.state.elements, element] });
-        Chat.setState({ elements: [...Chat.state.elements, element] });
 
         var test = new Map(Chat.state.channels);
         test.set(name, "");
