@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('JOIN_ROOM', function (data) {
-    socket.handshake.name = data.username;
+    socket.handshake.username = data.username;
     socket.handshake.parentId = data.parentId;
     socket.join(data.room);
     connectedSockets.add(socket);
@@ -86,7 +86,8 @@ io.on('connection', (socket) => {
     var allUsers = new Array();
     getConnectedSockets().forEach(function (s) {
       if (s.rooms.has(data.room)) {
-        allUsers.push(s.handshake.name);
+        console.log(s.handshake.username)
+        allUsers.push(s.handshake.username);
       }
     })
 
@@ -96,19 +97,16 @@ io.on('connection', (socket) => {
   })
 
   socket.on('SET_NEW_USERNAME', function (data) {
-
+    socket.handshake.username = data.newUsername ;
     getConnectedSockets().forEach(function (s) {
       if(s.handshake.parentId == socket.id){
-        console.log(s)
-
-        s.handshake.username = data.newName;
-        socket.to(s).emit('RECIEVE_NEW_USERNAME', {
-          username:data.newName 
+        s.handshake.username = data.newUsername ;
+        io.to(s.id).emit('RECEIVE_NEW_USERNAME', {
+          newUsername:data.newUsername  
         })
       }
     })
   })
-
 })
 
 

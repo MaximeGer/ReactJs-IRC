@@ -8,8 +8,6 @@ const commonReceiveFunctions = (socket, Chat) => {
     };
 
     socket.on('RECEIVE_USERS', function (data) {
-        console.log(data.listUsers)
-        //Chat.setState({ messages: [...Chat.state.messages, 'Users on the channel :'] });
         addMessage({
             author: "System",
             message: "list of all users on the channel : ",

@@ -44,7 +44,6 @@ const joinChannel = async (name, Chat) => {
 
         // React.createElement(element, document.querySelector("body"))
         Chat.setState({ channels: test });
-        console.log(Chat.state.channels);
     }
 }
 export default joinChannel;

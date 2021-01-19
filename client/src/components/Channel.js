@@ -1,6 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
-import commonReceiveFunctions from "../socket/commonReceiveFunctions" 
+import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 
 class Channel extends React.Component {
     constructor(props) {
@@ -12,31 +12,34 @@ class Channel extends React.Component {
             messages: [],
             title: this.props.title
         };
-        
+
         const socket = io('localhost:9000');
 
         socket.emit("JOIN_ROOM", {
             room: this.props.title,
-            username:this.state.username,
+            username: this.state.username,
             parentId: this.props.parentId
         })
 
-        
+
         socket.on('connect', () => {
             this.props.onSetUpId(socket.id, this.props.title)
         });
 
         socket.on('ROOM_DELETED', (name) => {
-            if(document.getElementById('Channel name : ' + name)){
+            if (document.getElementById('Channel name : ' + name)) {
                 document.getElementById('Channel name : ' + name).remove();
             }
         })
-     
+
         commonReceiveFunctions(socket, this);
 
-        socket.on('RECIEVE_NEW_USERNAME', (newUsername) => {
+        socket.on('RECEIVE_NEW_USERNAME', (data) => {
             console.log("yolo'azazaz");
-            this.setState({username:newUsername})
+            console.log(this.state.username)
+            console.log(data.newUsername)
+            this.setState({ username: data.newUsername })
+            console.log(this.state.username)
         })
 
 
@@ -68,7 +71,7 @@ class Channel extends React.Component {
     }
     render() {
         return (
-            <div className="col-4" id= {'Channel name : '+ this.state.title}>
+            <div className="col-4" id={'Channel name : ' + this.state.title}>
                 <div className="card">
                     <div className="card-body">
                         <div className="card-title">{this.state.title}</div>
