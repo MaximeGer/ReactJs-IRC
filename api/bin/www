@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
+const { all } = require('../app');
 
 /**
  * Get port from environment and store in Express.
@@ -46,21 +47,25 @@ function getConnectedSockets() {
 io.on('connection', (socket) => {
   console.log(`Connecté au client ${socket.id}`)
 
+  socket.on('disconnect', function () {
+    connectedSockets.delete(socket);
+  });
+
   socket.on('SEND_MESSAGE', function (data) {
     io.to(data.room).emit('RECEIVE_MESSAGE', data);
   })
 
   socket.on('JOIN_ROOM', function (data) {
+    socket.handshake.name = data.username;
+    console.log(socket.handshake.name);
     socket.join(data.room);
     connectedSockets.add(socket);
-    getConnectedSockets().forEach(function (s) {
-      console.log(s.id)
-    })
   })
 
   socket.on('QUIT_ROOM', function (data) {
+    console.log(socket.handshake.name);
+
     getConnectedSockets().forEach(function (s) {
-      console.log(s);
       if (s.id == data.id) {
         s.leave(data.room);
         connectedSockets.delete(s);
@@ -71,13 +76,25 @@ io.on('connection', (socket) => {
 
   socket.on('DELETE_ROOM', function (data) {
     getConnectedSockets().forEach(function (s) {
-      if(s.rooms.has(data.room)){
+      if (s.rooms.has(data.room)) {
         s.emit('ROOM_DELETED', data.room);
         s.leave(data.room);
         connectedSockets.delete(s);
       }
     });
   });
+
+
+  socket.on('ASK_USERS', function (data) {
+    var allUsers = new Array();
+    getConnectedSockets().forEach(function (s) {
+      allUsers.push(s.handshake.name)
+    })
+
+    io.to(socket.id).emit('RECEIVE_USERS', {
+      listUsers: allUsers
+    })
+  })
 })
 
 

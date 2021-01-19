@@ -22,36 +22,41 @@ class Chat extends React.Component {
 
         this.renderChannel = (name) => {
             return (
-                <Channel title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id}/>
+                <Channel title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
             );
         }
 
         const handleNewChildId = (newId, nameChannel) => {
             const addIdToChannel = this.state.channels;
             addIdToChannel.set(nameChannel, newId)
-            this.setState({ channels: addIdToChannel})
+            this.setState({ channels: addIdToChannel })
         }
 
         socket.emit('JOIN_ROOM', {
-            room: this.state.title
+            room: this.state.title,
+            username:this.state.username
         })
 
         socket.on('ROOM_LEAVED', (name) => {
-            console.log("dscuysdgvhhdgvbsjhdsvgbjkluhsdfvghbljkdfvsbklujdfbvhjkldfb   " + name)
-            if(document.getElementById('Channel name : ' + name)){
+            if (document.getElementById('Channel name : ' + name)) {
                 document.getElementById('Channel name : ' + name).remove();
             }
         })
 
-        
         socket.on('RECEIVE_MESSAGE', function (data) {
             addMessage(data);
         });
 
+        socket.on('RECEIVE_USERS', function (data) {
+            console.log(data)
+            Array.from(data).forEach(function (username){
+                console.log(username)
+                this.setState({ messages: [...this.state.messages, username] });
+            })
+        });
+
         const addMessage = data => {
-            console.log(data);
             this.setState({ messages: [...this.state.messages, data] });
-            //console.log(this.state.messages);
         };
 
 
@@ -88,10 +93,6 @@ class Chat extends React.Component {
                 console.log(this.state.elements)
 
             } else if (listRegex.test(message)) {
-                var name = message.slice(6);
-                socket.emit('SHOW_ROOM', {
-                    room: name
-                })
                 commandString = message.slice(6);
                 if (commandString === "" || commandString === " " || commandString === null) {
                     // DISPLAY ALL CHANNEL
@@ -120,8 +121,12 @@ class Chat extends React.Component {
 
             } else if (usersRegex.test(message)) {
                 commandString = message.slice(7);
+
                 // LIST ALL USERS
                 console.log("List users on the channel");
+                socket.emit('ASK_USERS', {
+                    room: this.state.title
+                })
 
             } else if (msgRegex.test(message)) {
                 commandString = message.slice(5);
@@ -167,7 +172,7 @@ class Chat extends React.Component {
                     });
             }
         }
-        
+
 
         const joinChannel = async name => {
             var channelExists = false;
@@ -196,7 +201,7 @@ class Chat extends React.Component {
                 console.log("Join the channel with the name : " + name);
                 var div = document.createElement("div");
                 div.className = "row"
-                
+
                 document.querySelector(".container").append(div)
                 const nodes = document.querySelectorAll(".row")
                 const last = nodes[nodes.length - 1];
@@ -211,7 +216,7 @@ class Chat extends React.Component {
                 test.set(name, "");
 
                 // React.createElement(element, document.querySelector("body"))
-                this.setState({ channels:  test });
+                this.setState({ channels: test });
                 console.log(this.state.channels)
 
             }
