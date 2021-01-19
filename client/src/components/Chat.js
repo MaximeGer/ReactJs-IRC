@@ -5,6 +5,7 @@ import joinChannel from "../commands/joinChannel"
 import deleteChannel from "../commands/deleteChannel"
 import quitChannel from "../commands/quitChannel"
 import showUsers from "../commands/showUsers"
+import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 import Channel from "./Channel";
 import { socket } from "../service/socket";
 
@@ -49,32 +50,7 @@ class Chat extends React.Component {
             }
         })
 
-        socket.on('RECEIVE_MESSAGE', function (data) {
-            addMessage(data);
-        });
-
-        const addMessage = data => {
-            this.setState({ messages: [...this.state.messages, data] });
-        };
-
-        socket.on('RECEIVE_USERS', function (data) {
-            console.log(data.listUsers)
-            //this.setState({ messages: [...this.state.messages, 'Users on the channel :'] });
-            addMessage({
-                author: "System",
-                message: "list of all users on the channel : ",
-                separator: " : "
-            })
-            data.listUsers.forEach(username => {
-                addMessage({
-                    author: "",
-                    message: username,
-                    separator: " - "
-                })
-            })
-        });
-
-
+       commonReceiveFunctions(socket, this);
 
         this.sendMessage = ev => {
             ev.preventDefault();

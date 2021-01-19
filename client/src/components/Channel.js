@@ -1,5 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
+import commonReceiveFunctions from "../socket/commonReceiveFunctions" 
 
 class Channel extends React.Component {
     constructor(props) {
@@ -25,36 +26,13 @@ class Channel extends React.Component {
             this.props.onSetUpId(socket.id, this.props.title)
         });
 
-        socket.on('RECEIVE_MESSAGE', function (data) {
-            addMessage(data);
-        });
-        
-        const addMessage = data => {
-            this.setState({ messages: [...this.state.messages, data] });
-        };
-
-        socket.on('RECEIVE_USERS', function (data) {
-            console.log(data.listUsers)
-            //this.setState({ messages: [...this.state.messages, 'Users on the channel :'] });
-            addMessage({
-                author: "System",
-                message: "list of all users on the channel : ",
-                separator: " : "
-            })
-            data.listUsers.forEach(username => {
-                addMessage({
-                    author: "",
-                    message: username,
-                    separator: " - "
-                })
-            })
-        });
-
         socket.on('ROOM_DELETED', (name) => {
             if(document.getElementById('Channel name : ' + name)){
                 document.getElementById('Channel name : ' + name).remove();
             }
         })
+
+        commonReceiveFunctions(socket, this);
 
 
         this.sendMessage = ev => {
