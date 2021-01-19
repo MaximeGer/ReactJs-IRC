@@ -34,10 +34,19 @@ class Channel extends React.Component {
         };
 
         socket.on('RECEIVE_USERS', function (data) {
-            console.log(data)
-            Array.from(data).forEach(function (username){
-                console.log(username)
-                this.setState({ messages: [...this.state.messages, username] });
+            console.log(data.listUsers)
+            //this.setState({ messages: [...this.state.messages, 'Users on the channel :'] });
+            addMessage({
+                author: "System",
+                message: "list of all users on the channel : ",
+                separator: " : "
+            })
+            data.listUsers.forEach(username => {
+                addMessage({
+                    author: "",
+                    message: username,
+                    separator: " - "
+                })
             })
         });
 
@@ -66,6 +75,7 @@ class Channel extends React.Component {
                 socket.emit('SEND_MESSAGE', {
                     author: this.state.username,
                     message: message,
+                    separator: " : ",
                     room: this.state.title
                 })
             }
@@ -82,7 +92,7 @@ class Channel extends React.Component {
                         <div className="messages">
                             {this.state.messages.map(message => {
                                 return (
-                                    <div>{message.author} : {message.message}</div>
+                                    <div>{message.author} {message.separator} {message.message}</div>
                                 )
                             })}
                         </div>

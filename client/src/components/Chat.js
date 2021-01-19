@@ -47,18 +47,28 @@ class Chat extends React.Component {
             addMessage(data);
         });
 
+        const addMessage = data => {
+            this.setState({ messages: [...this.state.messages, data] });
+        };        
+
         socket.on('RECEIVE_USERS', function (data) {
-            console.log(data)
-            Array.from(data).forEach(function (username){
-                console.log(username)
-                this.setState({ messages: [...this.state.messages, username] });
+            console.log(data.listUsers)
+            //this.setState({ messages: [...this.state.messages, 'Users on the channel :'] });
+            addMessage({
+                author: "System",
+                message: "list of all users on the channel : ",
+                separator: " : "
+            })
+            data.listUsers.forEach(username => {
+                addMessage({
+                    author: "",
+                    message: username,
+                    separator: " - "
+                })
             })
         });
 
-        const addMessage = data => {
-            this.setState({ messages: [...this.state.messages, data] });
-        };
-
+        
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -78,19 +88,13 @@ class Chat extends React.Component {
             this.state.success = "";
 
             if (nickRegex.test(message)) {
-                console.log(this.state.elements)
                 this.setState({ username: message.slice(6) });
-                console.log(this.state.elements)
                 const nodes = document.querySelectorAll(".row")
                 const last = nodes[nodes.length - 1];
                 this.state.elements.forEach(element => {
-                    console.log(element)
                     element._self.state.username = this.state.username
-                    console.log(element)
-
                     ReactDOM.render(this.renderChannel(element._self.state.title), last)
                 })
-                console.log(this.state.elements)
 
             } else if (listRegex.test(message)) {
                 commandString = message.slice(6);
@@ -123,7 +127,6 @@ class Chat extends React.Component {
                 commandString = message.slice(7);
 
                 // LIST ALL USERS
-                console.log("List users on the channel");
                 socket.emit('ASK_USERS', {
                     room: this.state.title
                 })
@@ -144,6 +147,7 @@ class Chat extends React.Component {
                 socket.emit('SEND_MESSAGE', {
                     author: this.state.username,
                     message: message,
+                    separator: " : ",
                     room: this.state.title
                 })
 
@@ -284,7 +288,7 @@ class Chat extends React.Component {
                         <div className="messages">
                             {this.state.messages.map(message => {
                                 return (
-                                    <div>{message.author} : {message.message}</div>
+                                    <div>{message.author} {message.separator} {message.message}</div>
                                 )
                             })}
                         </div>
