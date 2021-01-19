@@ -15,7 +15,8 @@ class Channel extends React.Component {
         const socket = io('localhost:9000');
 
         socket.emit("JOIN_ROOM", {
-            room: this.props.title
+            room: this.props.title,
+            parentId: this.props.parentId
         })
 
         
@@ -26,6 +27,13 @@ class Channel extends React.Component {
         socket.on('RECEIVE_MESSAGE', function (data) {
             addMessage(data);
         });
+
+        socket.on('ROOM_DELETED', (name) => {
+            console.log("dscuysdgvhhdgvbsjhdsvgbjkluhsdfvghbljkdfvsbklujdfbvhjkldfb   " + name)
+            if(document.getElementById('Channel name : ' + name)){
+                document.getElementById('Channel name : ' + name).remove();
+            }
+        })
 
         const addMessage = data => {
             console.log(data);

@@ -22,7 +22,7 @@ class Chat extends React.Component {
 
         this.renderChannel = (name) => {
             return (
-                <Channel title={name} username={this.state.username} onSetUpId={handleNewChildId} />
+                <Channel title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id}/>
             );
         }
 
@@ -36,8 +36,8 @@ class Chat extends React.Component {
             room: this.state.title
         })
 
-        socket.on('ROOM_DELETED', (name) => {
-            console.log("dscuysdgvhhdgvbsjhdsvgbjkluhsdfvghbljkdfvsbklujdfbvhjkldfb")
+        socket.on('ROOM_LEAVED', (name) => {
+            console.log("dscuysdgvhhdgvbsjhdsvgbjkluhsdfvghbljkdfvsbklujdfbvhjkldfb   " + name)
             if(document.getElementById('Channel name : ' + name)){
                 document.getElementById('Channel name : ' + name).remove();
             }
@@ -257,8 +257,9 @@ class Chat extends React.Component {
                 //this.state.channels.splice(name, 1);
 
                 var idToDisconnect = this.state.channels.get(name);
-                socket.emit('DISCONNECT_USER', {
-                    id: idToDisconnect
+                socket.emit('QUIT_ROOM', {
+                    id: idToDisconnect,
+                    room: name
                 })
 
                 this.state.channels.delete(name);
