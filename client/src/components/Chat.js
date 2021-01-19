@@ -21,7 +21,7 @@ class Chat extends React.Component {
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.renderChannel = (name, id) => {
             return (
                 <Channel key={id} title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
@@ -51,7 +51,7 @@ class Chat extends React.Component {
 
         const addMessage = data => {
             this.setState({ messages: [...this.state.messages, data] });
-        };        
+        };
 
         socket.on('RECEIVE_USERS', function (data) {
             console.log(data.listUsers)
@@ -70,7 +70,7 @@ class Chat extends React.Component {
             })
         });
 
-        
+
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -86,8 +86,8 @@ class Chat extends React.Component {
             var msgRegex = new RegExp("^/msg");
 
             var commandString = "";
-            this.setState({error: ""});
-            this.setState({success: ""});
+            this.setState({ error: "" });
+            this.setState({ success: "" });
 
             if (nickRegex.test(message)) {
                 this.setState({ username: message.slice(6) });
@@ -126,12 +126,7 @@ class Chat extends React.Component {
                 quitChannel(commandString);
 
             } else if (usersRegex.test(message)) {
-                commandString = message.slice(7);
-
-                // LIST ALL USERS
-                socket.emit('ASK_USERS', {
-                    room: this.state.title
-                })
+                showUsers(this.state.title);
 
             } else if (msgRegex.test(message)) {
                 commandString = message.slice(5);
@@ -157,6 +152,7 @@ class Chat extends React.Component {
             }
             this.setState({ message: '' });
         }
+
 
         const createChannel = async name => {
             if (name === "" || name === " " || name === null) {
@@ -277,6 +273,13 @@ class Chat extends React.Component {
 
                 this.state.channels.delete(name);
             }
+        }
+
+        const showUsers = roomName => {
+            // LIST ALL USERS
+            socket.emit('ASK_USERS', {
+                room: roomName
+            })
         }
     }
 
