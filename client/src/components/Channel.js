@@ -56,6 +56,11 @@ class Channel extends React.Component {
             }
         })
 
+        socket.on('RECIEVE_NEW_USERNAME', (newUsername) => {
+            console.log("yolo'");
+            this.setState({username:newUsername})
+        })
+
 
         this.sendMessage = ev => {
             ev.preventDefault();

@@ -45,7 +45,7 @@ function getConnectedSockets() {
 
 // établissement de la connexion
 io.on('connection', (socket) => {
-  console.log(`Connecté au client ${socket.id}`)
+  console.log(`Connecté au client ${socket.id}`);
 
   socket.on('disconnect', function () {
     connectedSockets.delete(socket);
@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
 
   socket.on('JOIN_ROOM', function (data) {
     socket.handshake.name = data.username;
+    socket.handshake.parentId = data.parentId;
     socket.join(data.room);
     connectedSockets.add(socket);
   })
@@ -85,7 +86,7 @@ io.on('connection', (socket) => {
     var allUsers = new Array();
     getConnectedSockets().forEach(function (s) {
       if (s.rooms.has(data.room)) {
-        allUsers.push(s.handshake.name)
+        allUsers.push(s.handshake.name);
       }
     })
 
@@ -93,6 +94,18 @@ io.on('connection', (socket) => {
       listUsers: allUsers
     })
   })
+
+  socket.on('SET_NEW_USERNAME', function (data) {
+    getConnectedSockets().forEach(function (s) {
+      if(s.handshake.parentId == socket.id){
+        s.handshake.username = data.newName;
+        socket.to(s).emit('RECIEVE_NEW_USERNAME', {
+          username:data.newName 
+        })
+      }
+    })
+  })
+
 })
 
 

@@ -16,23 +16,12 @@ class Chat extends React.Component {
             socketId: '',
             channels: new Map(),
             messages: [],
-            elements: [],
             title: "Global Chat"
         };
     }
 
     componentDidMount() {
-        this.renderChannel = (name, id) => {
-            return (
-                <Channel key={id} title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
-            );
-        }
 
-        const handleNewChildId = (newId, nameChannel) => {
-            const addIdToChannel = this.state.channels;
-            addIdToChannel.set(nameChannel, newId)
-            this.setState({ channels: addIdToChannel })
-        }
 
         socket.emit('JOIN_ROOM', {
             room: this.state.title,
@@ -54,8 +43,6 @@ class Chat extends React.Component {
         };
 
         socket.on('RECEIVE_USERS', function (data) {
-            console.log(data.listUsers)
-            //this.setState({ messages: [...this.state.messages, 'Users on the channel :'] });
             addMessage({
                 author: "System",
                 message: "list of all users on the channel : ",
@@ -70,7 +57,17 @@ class Chat extends React.Component {
             })
         });
 
+        this.renderChannel = (name, id) => {
+            return (
+                <Channel key={id} title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
+            );
+        }
 
+        const handleNewChildId = (newId, nameChannel) => {
+            const addIdToChannel = this.state.channels;
+            addIdToChannel.set(nameChannel, newId)
+            this.setState({ channels: addIdToChannel })
+        }
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -90,12 +87,12 @@ class Chat extends React.Component {
             this.setState({ success: "" });
 
             if (nickRegex.test(message)) {
-                this.setState({ username: message.slice(6) });
-                const nodes = document.querySelectorAll(".row")
-                const last = nodes[nodes.length - 1];
-                this.state.elements.forEach(element => {
-                    element._self.state.username = this.state.username
-                    ReactDOM.render(this.renderChannel(element._self.state.title), last)
+                commandString= message.slice(6);
+
+                var newName = commandString;
+                this.setState({ username: newName });
+                socket.emit('SET_NEW_USERNAME',{
+                    newUsername:newName
                 })
 
             } else if (listRegex.test(message)) {
@@ -214,15 +211,12 @@ class Chat extends React.Component {
 
                 ReactDOM.render(element, last)
                 //this.setState({ elements: [...this.state.elements, element] });
-                this.setState({ elements: [...this.state.elements, element] });
 
                 var test = new Map(this.state.channels);
                 test.set(name, "");
 
                 // React.createElement(element, document.querySelector("body"))
                 this.setState({ channels: test });
-                console.log(this.state.channels)
-
             }
         }
 
