@@ -4,6 +4,7 @@ import createChannel from "../commands/createChannel"
 import joinChannel from "../commands/joinChannel"
 import deleteChannel from "../commands/deleteChannel"
 import quitChannel from "../commands/quitChannel"
+import showUsers from "../commands/showUsers"
 import Channel from "./Channel";
 import { socket } from "../service/socket";
 
@@ -119,7 +120,7 @@ class Chat extends React.Component {
                 quitChannel(commandString, this, socket);
 
             } else if (usersRegex.test(message)) {
-                showUsers(this.state.title);
+                showUsers(this.state.title, socket);
 
             } else if (msgRegex.test(message)) {
                 commandString = message.slice(5);
@@ -144,13 +145,6 @@ class Chat extends React.Component {
 
             }
             this.setState({ message: '' });
-        }
-		
-        const showUsers = roomName => {
-            // LIST ALL USERS
-            socket.emit('ASK_USERS', {
-                room: roomName
-            })
         }
     }
 
