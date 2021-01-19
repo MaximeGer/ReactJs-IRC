@@ -1,4 +1,5 @@
 import React from "react";
+import privateMessage from "../commands/privateMessage"
 import changeNick from "../commands/changeNick"
 import createChannel from "../commands/createChannel"
 import joinChannel from "../commands/joinChannel"
@@ -36,6 +37,12 @@ class Chat extends React.Component {
                 document.getElementById('Channel name : ' + name).remove();
             }
         })
+
+        socket.on('RECEIVE_ERROR', function (data) {
+            console.log(data.message)
+            this.setState({ error: data.message });
+        });
+    
 
        commonReceiveFunctions(socket, this);
 
@@ -104,14 +111,7 @@ class Chat extends React.Component {
 
             } else if (msgRegex.test(message)) {
                 commandString = message.slice(5);
-                var nickToSend = commandString.substr(0, commandString.indexOf(' '));
-                var messageToSend = commandString.substr(commandString.indexOf(' ') + 1);
-                if (messageToSend === "" || messageToSend === null || nickToSend === "" || nickToSend === null) {
-                    this.setState({ error: "You have to specify a name and a message to send  : \"/msg nickname message\"" });
-                } else {
-                    // SEND MESSAGE
-                    console.log("Send \"" + messageToSend + "\" to the user with the name : " + nickToSend);
-                }
+                privateMessage(commandString, this, socket);
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 

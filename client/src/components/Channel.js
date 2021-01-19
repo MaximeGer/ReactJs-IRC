@@ -1,5 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
+import showUsers from "../commands/showUsers"
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 
 class Channel extends React.Component {
@@ -21,7 +22,6 @@ class Channel extends React.Component {
             parentId: this.props.parentId
         })
 
-
         socket.on('connect', () => {
             this.props.onSetUpId(socket.id, this.props.title)
         });
@@ -35,14 +35,8 @@ class Channel extends React.Component {
         commonReceiveFunctions(socket, this);
 
         socket.on('RECEIVE_NEW_USERNAME', (data) => {
-            console.log("yolo'azazaz");
-            console.log(this.state.username)
-            console.log(data.newUsername)
             this.setState({ username: data.newUsername })
-            console.log(this.state.username)
         })
-
-
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -51,11 +45,8 @@ class Channel extends React.Component {
             var usersRegex = new RegExp("^/users");
 
             if (usersRegex.test(message)) {
-                // LIST ALL USERS
-                console.log("List users on the channel");
-                socket.emit('ASK_USERS', {
-                    room: this.state.title
-                })
+                showUsers(this.state.title, socket);
+
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 

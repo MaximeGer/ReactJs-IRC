@@ -55,6 +55,24 @@ io.on('connection', (socket) => {
     io.to(data.room).emit('RECEIVE_MESSAGE', data);
   })
 
+  socket.on('SEND_PRIVATE_MESSAGE', function (data) {
+    var found = 0;
+    getConnectedSockets().forEach(function (s) {
+      if (s.handshake.username == data.receiver && !s.handshake.parentId) {
+        socket.to(s.id).emit('RECEIVE_MESSAGE', data);
+        found += 1;
+      }
+    })
+    if (found > 0) {
+      data.separator = " (to "+data.receiver+" = " + found + " users) : "
+      io.to(socket.id).emit('RECEIVE_MESSAGE', data);
+    } else {
+      io.to(socket.id).emit('RECEIVE_ERROR', {
+        message: 'Couldn\'t find username with the name : ' + data.receiver
+      });
+    }
+  })
+
   socket.on('JOIN_ROOM', function (data) {
     socket.handshake.username = data.username;
     socket.handshake.parentId = data.parentId;
@@ -86,7 +104,6 @@ io.on('connection', (socket) => {
     var allUsers = new Array();
     getConnectedSockets().forEach(function (s) {
       if (s.rooms.has(data.room)) {
-        console.log(s.handshake.username)
         allUsers.push(s.handshake.username);
       }
     })
@@ -97,12 +114,12 @@ io.on('connection', (socket) => {
   })
 
   socket.on('SET_NEW_USERNAME', function (data) {
-    socket.handshake.username = data.newUsername ;
+    socket.handshake.username = data.newUsername;
     getConnectedSockets().forEach(function (s) {
-      if(s.handshake.parentId == socket.id){
-        s.handshake.username = data.newUsername ;
+      if (s.handshake.parentId == socket.id) {
+        s.handshake.username = data.newUsername;
         io.to(s.id).emit('RECEIVE_NEW_USERNAME', {
-          newUsername:data.newUsername  
+          newUsername: data.newUsername
         })
       }
     })
