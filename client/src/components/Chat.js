@@ -19,7 +19,9 @@ class Chat extends React.Component {
             elements: [],
             title: "Global Chat"
         };
+    }
 
+    componentDidMount(){
         this.renderChannel = (name, id) => {
             return (
                 <Channel key={id} title={name} username={this.state.username} onSetUpId={handleNewChildId} parentId={socket.id} />
@@ -74,8 +76,8 @@ class Chat extends React.Component {
             var msgRegex = new RegExp("^/msg");
 
             var commandString = "";
-            this.state.error = "";
-            this.state.success = "";
+            this.setState({error: ""});
+            this.setState({success: ""});
 
             if (nickRegex.test(message)) {
                 console.log(this.state.elements)
@@ -272,10 +274,8 @@ class Chat extends React.Component {
                 this.state.channels.delete(name);
             }
         }
-
-
-
     }
+
     render() {
         return (
             <div className="col-4">

@@ -5,13 +5,11 @@ import reportWebVitals from './reportWebVitals';
 import enterKeyEvent from './enterKeySendsMessage';
 import Chat from "./components/Chat";
 
-
-
 ReactDOM.render(
   <React.StrictMode>
     <div className="container">
-      <div className="row"> 
-        <Chat key={Math.random()*10}/>
+      <div className="row">
+        <Chat />
       </div>
     </div>
   </React.StrictMode>,
