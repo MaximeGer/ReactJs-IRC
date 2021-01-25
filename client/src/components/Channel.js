@@ -2,6 +2,7 @@ import React from "react";
 import io from "socket.io-client";
 import showUsers from "../commands/showUsers"
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
+import { drag, drop, allowDrop } from "../scripts/drag&drop"
 
 class Channel extends React.Component {
     constructor(props) {
@@ -62,7 +63,7 @@ class Channel extends React.Component {
     }
     render() {
         return (
-            <div className="card">
+            <div className="card" id={this.state.title} draggable={true} onDragStart={drag} onDragOver={allowDrop} onDrop={drop}>
                 <div className="card-body">
                     <div className="card-title">{this.state.title}</div>
                     <hr />

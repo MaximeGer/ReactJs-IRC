@@ -1,4 +1,5 @@
 function drag(event) {
+    console.log(event)
     event.dataTransfer.setData
         ('target_id', event.target.id);
     console.log("drag")
@@ -7,21 +8,19 @@ function drag(event) {
 
 function allowDrop(event) {
     event.preventDefault();
-    console.log("allowDrop")
 }
 
 function drop(event) {
     event.preventDefault();
-    console.log("drop")
 
     var drop_target;
-    if(event.target.className !== "col-4"){
-        drop_target = event.target.closest(".col-4");
+    if(event.target.className !== "card"){
+        drop_target = event.target.closest(".card");
     }
     else{
         drop_target = event.target;
     }
-
+    console.log(event.dataTransfer.getData('target_id'))
     var drag_target_id = event.dataTransfer.getData('target_id');
     var drag_target = document.getElementById(drag_target_id);
     var tmp = drag_target.outerHTML;
