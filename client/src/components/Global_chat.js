@@ -1,4 +1,9 @@
 import React from "react";
+import { socket } from "../services/socket";
+
+import Channel from "./Channel";
+import AuthService from "../services/auth.service";
+
 import privateMessage from "../commands/privateMessage"
 import changeNick from "../commands/changeNick"
 import createChannel from "../commands/createChannel"
@@ -8,15 +13,15 @@ import quitChannel from "../commands/quitChannel"
 import showUsers from "../commands/showUsers"
 import listChannels from "../commands/listChannels"
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
-import Channel from "./Channel";
-import { socket } from "../services/socket";
+
+
 
 class Global_Chat extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            username: '',
+            username: AuthService.getCurrentUser().username,
             message: '',
             error: '',
             success: '',
@@ -28,6 +33,8 @@ class Global_Chat extends React.Component {
     }
 
     componentDidMount() {
+
+        
         socket.emit('JOIN_ROOM', {
             room: this.state.title,
             username: this.state.username

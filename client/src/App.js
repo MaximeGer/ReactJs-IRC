@@ -37,7 +37,6 @@ class App extends Component {
 
     return (
       <BrowserRouter>
-
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <div className="navbar-nav mr-auto">
             {currentUser && (
@@ -89,7 +88,7 @@ class App extends Component {
             />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
-            <Route exact path={["/", "/home", "/chat"]} component={Chat} />
+            <Route exact path={["/", "/home", "/chat"]} component={Chat} username={AuthService.getCurrentUser()} />
           </Switch>
         </div>
       </BrowserRouter>
