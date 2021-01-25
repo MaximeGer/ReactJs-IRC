@@ -86,6 +86,29 @@ exports.findByName = (req, res) => {
 };
 
 
+exports.findByRegex = (req, res) => {
+    const regex = req.params.regex;
+    var condition = regex ? { name: { [Op.like]: `%${regex}%` } } : null;
+
+    Channel.findAll({where: condition})
+        .then(data => {
+            if(data == null || data == ""){
+                res.status(404).send({
+                    message: "Channel couldn't be found"
+                });
+            }
+            else{
+                res.send(data);
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error retrieving Channel with name=" + name
+            });
+        });
+};
+
+
 // Update a Channel by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
