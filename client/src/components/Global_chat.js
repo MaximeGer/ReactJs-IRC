@@ -124,7 +124,7 @@ class Global_Chat extends React.Component {
 
     render() {
         return (
-            <div className="col-4">
+            <div className="col-12">
                 <div className="card">
                     <div className="card-body">
                         <div className="card-title">{this.state.title}</div>
