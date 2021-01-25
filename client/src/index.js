@@ -7,9 +7,14 @@ import Chat from "./components/Chat";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="container">
+    <div className="container" id="global">
       <div className="row">
         <Chat />
+      </div>
+    </div>
+    <div className="container" id="channels">
+      <div className="row">
+
       </div>
     </div>
   </React.StrictMode>,

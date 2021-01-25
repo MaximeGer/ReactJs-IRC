@@ -62,7 +62,6 @@ class Channel extends React.Component {
     }
     render() {
         return (
-            <div className="col-4" id={'Channel name : ' + this.state.title}>
                 <div className="card">
                     <div className="card-body">
                         <div className="card-title">{this.state.title}</div>
@@ -82,7 +81,6 @@ class Channel extends React.Component {
                         <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
                     </div>
                 </div>
-            </div>
         );
     }
 }

@@ -29,12 +29,14 @@ const joinChannel = async (name, Chat) => {
     } else {
         // JOIN CHANNEL DB + SOCKET.IO
         console.log("Join the channel with the name : " + name);
-        var div = document.createElement("div");
-        div.className = "row"
 
-        document.querySelector(".container").append(div)
-        const nodes = document.querySelectorAll(".row")
-        const last = nodes[nodes.length - 1];
+        var div = document.createElement("div");
+        div.className = "col-4"
+        div.id = "Channel name : "+name
+        document.querySelector("#channels .row").append(div)
+
+        var nodes = document.querySelectorAll("#channels .row .col-4")
+        var last = nodes[nodes.length - 1];
 
         const element = Chat.renderChannel(name, id);
 
