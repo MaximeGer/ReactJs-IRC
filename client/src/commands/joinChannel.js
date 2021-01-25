@@ -7,6 +7,7 @@ const joinChannel = async (name, Chat) => {
     await fetch("http://localhost:9000/api/channels/byName/" + name, {
         method: 'GET',
     }).then(response => {
+        console.log(response)
         if (response.status === 200) {
             Chat.setState({ success: "The channel \"" + name + "\" has been successfully joined" });
             channelExists = true;
