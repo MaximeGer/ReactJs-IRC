@@ -24,6 +24,8 @@ db.sequelize.sync();
 
 require("./routes/messages")(app)
 require("./routes/channels")(app)
+require("./routes/auth")(app)
+require("./routes/user")(app)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

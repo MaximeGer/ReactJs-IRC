@@ -3,20 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import enterKeyEvent from './enterKeySendsMessage';
-import Chat from "./components/Chat";
+import App from "./App";
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="container" id="global">
-      <div className="row">
-        <Chat />
-      </div>
-    </div>
-    <div className="container" id="channels">
-      <div className="row">
-
-      </div>
-    </div>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
