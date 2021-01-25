@@ -1,6 +1,8 @@
 const commonReceiveFunctions = (socket, Chat) => {
     socket.on('RECEIVE_MESSAGE', function (data) {
         addMessage(data);
+        var messageBody = document.querySelector('.messages');
+        messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
     });
 
     const addMessage = data => {

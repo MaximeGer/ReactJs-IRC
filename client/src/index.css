@@ -20,4 +20,8 @@ code {
   color: green;
 }
 
+.messages{
+  height: 200px;
+  overflow: auto;
+}
 
