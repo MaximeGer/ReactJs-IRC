@@ -24,7 +24,7 @@ module.exports = app => {
     // Delete all Channels
     router.delete("/", channels.deleteAll);
     
-    router.get("/regex/", channels.findByRegex)
+    router.get("/regex/:regex", channels.findByRegex)
   
     app.use('/api/channels', router);
   };
