@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import enterKeyEvent from './enterKeySendsMessage';
+import enterKeyEvent from './scripts/enterKeySendsMessage';
 import App from "./App";
 
 
