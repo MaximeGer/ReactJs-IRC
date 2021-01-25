@@ -6,9 +6,6 @@ module.exports = app => {
     // Create a new Channel
     router.post("/", channels.create);
   
-    // Retrieve all Channels
-    router.get("/", channels.findAll);
-  
     // Retrieve a single Channel with id
     router.get("/byID/:id", channels.findById);
 
@@ -24,7 +21,7 @@ module.exports = app => {
     // Delete all Channels
     router.delete("/", channels.deleteAll);
     
-    router.get("/regex/:regex", channels.findByRegex)
+    router.get("/regex", channels.findByRegex)
   
     app.use('/api/channels', router);
   };

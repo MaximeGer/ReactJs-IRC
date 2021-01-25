@@ -31,21 +31,6 @@ exports.create = (req, res) => {
         });
 };
 
-exports.findAll = (req, res) => {
-
-    Channel.findAll()
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving channels."
-            });
-        });
-};
-
-
 // Find a single Channel with an id
 exports.findById = (req, res) => {
     const id = req.params.id;
@@ -87,7 +72,7 @@ exports.findByName = (req, res) => {
 
 
 exports.findByRegex = (req, res) => {
-    const regex = req.params.regex;
+    const regex = req.query.regex;
     var condition = regex ? { name: { [Op.like]: `%${regex}%` } } : null;
 
     Channel.findAll({where: condition})
