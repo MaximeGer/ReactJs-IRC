@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
       }
     })
     if (found > 0) {
-      data.separator = " (to "+data.receiver+" = " + found + " users) : "
+      data.separator = " (to " + data.receiver + " = " + found + " users) : "
       io.to(socket.id).emit('RECEIVE_MESSAGE', data);
     } else {
       io.to(socket.id).emit('RECEIVE_ERROR', {

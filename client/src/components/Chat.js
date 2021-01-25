@@ -6,6 +6,7 @@ import joinChannel from "../commands/joinChannel"
 import deleteChannel from "../commands/deleteChannel"
 import quitChannel from "../commands/quitChannel"
 import showUsers from "../commands/showUsers"
+import listChannels from "../commands/listChannels"
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 import Channel from "./Channel";
 import { socket } from "../service/socket";
@@ -42,9 +43,9 @@ class Chat extends React.Component {
             console.log(data.message)
             this.setState({ error: data.message });
         });
-    
 
-       commonReceiveFunctions(socket, this);
+
+        commonReceiveFunctions(socket, this);
 
         this.renderChannel = (name, id) => {
             return (
@@ -76,20 +77,13 @@ class Chat extends React.Component {
             this.setState({ success: "" });
 
             if (nickRegex.test(message)) {
-                commandString= message.slice(6);
+                commandString = message.slice(6);
                 changeNick(commandString, this, socket);
-                
+
             } else if (listRegex.test(message)) {
                 commandString = message.slice(6);
-                if (commandString === "" || commandString === " " || commandString === null) {
-                    // DISPLAY ALL CHANNEL
-                    console.log("Display all channel available " + commandString);
-                    // TODO Display all channel available
-                } else {
-                    // DISPLAY ALL CHANNEL OF A STRING
-                    console.log("Display all channel available according to the string : " + commandString);
-                    // TODO Display all channel available according to a string
-                }
+                listChannels(commandString, this)
+
             } else if (createRegex.test(message)) {
                 commandString = message.slice(8);
                 createChannel(commandString, this);
