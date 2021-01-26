@@ -11,6 +11,8 @@ class Channel extends React.Component {
         this.state = {
             username: this.props.username,
             message: '',
+            error: '',
+            success: '',
             messages: [],
             title: this.props.title
         };

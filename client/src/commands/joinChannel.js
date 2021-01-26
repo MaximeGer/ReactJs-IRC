@@ -31,6 +31,7 @@ const joinChannel = async (name, Chat) => {
 
         var div = document.createElement("div");
         div.className = "col-4 mt-4"
+        div.id = 'Channel name : ' + name;
         document.querySelector("#channels .row").append(div)
 
         var nodes = document.querySelectorAll("#channels .row .col-4")
