@@ -1,3 +1,4 @@
+const { sequelize } = require("../models");
 const db = require("../models");
 const Message = db.messages;
 const Op = db.Sequelize.Op;
@@ -15,11 +16,11 @@ exports.create = (req, res) => {
   // Create a message
   const message = {
     message: req.body.message,
-    idchannel: req.body.idchannel,
+    channelTitle: req.body.channelTitle,
   };
 
   // Save message in the database
-  Message.create(message)
+  sequelize.query("INSERT INTO messages (`message`, `idchannel`) Values (\""+message.message+"\", (Select id from channels where name = \""+ message.channelTitle +"\"))" , { type: sequelize.QueryTypes.INSERT })
     .then(data => {
       res.send(data);
     })

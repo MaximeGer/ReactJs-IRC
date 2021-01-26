@@ -10,10 +10,11 @@ import listChannels from "../commands/listChannels"
 import helpMessage from "../commands/helpMessage"
 
 import AuthService from "../services/auth.service";
+import axios from "axios"
 
 
 const sendMessage = (Chat, socket) => {
-
+    var title = Chat.state.title;
     var message = Chat.state.message;
     var commandString = "";
 
@@ -72,6 +73,7 @@ const sendMessage = (Chat, socket) => {
                 separator: " : ",
                 room: Chat.state.title
             })
+            axios.post("http://localhost:9000/api/messages", { message: message , channelTitle : title});
             break;
     }
 
