@@ -1,10 +1,8 @@
 import ReactDOM from 'react-dom'
-import addMessage from "../scripts/addMessage"
-
-import AuthService from "../services/auth.service";
 
 const joinChannel = async (name, Chat, socket) => {
-    await fetch("http://localhost:9000/api/channels/byName/" + name, {
+    if(!Chat.props.parent.state.channels.has(name)){
+        await fetch("http://localhost:9000/api/channels/byName/" + name, {
         method: 'GET',
     }).then(response => {
         if (response.status === 200) {
@@ -23,26 +21,12 @@ const joinChannel = async (name, Chat, socket) => {
 
                 const element = Chat.props.parent.renderChannel(name,  response.id);
 
-                var channel = ReactDOM.render(element, last)
-
-                addMessage(channel,
-                    {
-                        author: "System",
-                        message: AuthService.getCurrentUser().username + " joined the channel",
-                        separator: " : "
-                    })
+                ReactDOM.render(element, last)
 
                 var allChannels = new Map(Chat.state.channels);
                 allChannels.set(name, "");
 
                 Chat.setState({ channels: allChannels });
-
-                socket.emit('SEND_MESSAGE', {
-                    author: "System",
-                    message: AuthService.getCurrentUser().username + " joined the channel",
-                    separator: " : ",
-                    room: name
-                })
 
                 Chat.setState({ success: "The channel \"" + name + "\" has been successfully joined" });
             }
@@ -55,5 +39,12 @@ const joinChannel = async (name, Chat, socket) => {
         console.log(err)
         Chat.setState({ error: "The channel \"" + name + "\" couldn't be joined" });
     });
+    } else {
+        Chat.setState({ error: "The channel \"" + name + "\" couldn't be joined, you already have joined it" });
+
+    }
+
+
+    
 }
 export default joinChannel;
