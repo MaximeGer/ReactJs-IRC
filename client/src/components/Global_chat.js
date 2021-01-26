@@ -12,6 +12,7 @@ import deleteChannel from "../commands/deleteChannel"
 import quitChannel from "../commands/quitChannel"
 import showUsers from "../commands/showUsers"
 import listChannels from "../commands/listChannels"
+import helpMessage from "../commands/helpMessage"
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 
 
@@ -70,14 +71,15 @@ class Global_Chat extends React.Component {
             ev.preventDefault();
 
             var message = this.state.message;
-            var nickRegex = new RegExp("^/nick");
-            var listRegex = new RegExp("^/list");
-            var createRegex = new RegExp("^/create");
-            var deleteRegex = new RegExp("^/delete");
-            var joinRegex = new RegExp("^/join");
-            var quitRegex = new RegExp("^/quit");
-            var usersRegex = new RegExp("^/users");
-            var msgRegex = new RegExp("^/msg");
+            var nickRegex = new RegExp("^/nick(?![^ ])");
+            var listRegex = new RegExp("^/list(?![^ ])");
+            var createRegex = new RegExp("^/create(?![^ ])");
+            var deleteRegex = new RegExp("^/delete(?![^ ])");
+            var joinRegex = new RegExp("^/join(?![^ ])");
+            var quitRegex = new RegExp("^/quit(?![^ ])");
+            var usersRegex = new RegExp("^/users(?![^ ])");
+            var msgRegex = new RegExp("^/msg(?![^ ])");
+            var helpRegex = new RegExp("^/help(?![^ ])");
 
             var commandString = "";
             this.setState({ error: "" });
@@ -113,6 +115,9 @@ class Global_Chat extends React.Component {
             } else if (msgRegex.test(message)) {
                 commandString = message.slice(5);
                 privateMessage(commandString, this, socket);
+            } else if (helpRegex.test(message)) {
+                commandString = message.slice(6);
+                helpMessage(commandString, this);
             } else {
                 // NORMAL MESSAGE TO THE CHANNEL
                 // SAVE TO BDD - with author + message + channel + time? 
@@ -122,8 +127,6 @@ class Global_Chat extends React.Component {
                     separator: " : ",
                     room: this.state.title
                 })
-
-
             }
             this.setState({ message: '' });
         }
