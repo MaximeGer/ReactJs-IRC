@@ -17,10 +17,12 @@ exports.create = (req, res) => {
   const message = {
     message: req.body.message,
     channelTitle: req.body.channelTitle,
+    author: req.body.author,
+    authorId: req.body.authorId
   };
 
   // Save message in the database
-  sequelize.query("INSERT INTO messages (`message`, `idchannel`) Values (\""+message.message+"\", (Select id from channels where name = \""+ message.channelTitle +"\"))" , { type: sequelize.QueryTypes.INSERT })
+  sequelize.query("INSERT INTO messages (`message`, `idchannel`, `author`, `authorid`) Values (\""+message.message+"\", (Select id from channels where name = \""+ message.channelTitle +"\"), \""+ message.author +"\", \"" + message.authorId + "\")" , { type: sequelize.QueryTypes.INSERT })
     .then(data => {
       res.send(data);
     })

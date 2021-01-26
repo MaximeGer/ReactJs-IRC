@@ -11,6 +11,7 @@ import helpMessage from "../commands/helpMessage"
 
 import AuthService from "../services/auth.service";
 import axios from "axios"
+import authService from "../services/auth.service"
 
 
 const sendMessage = (Chat, socket) => {
@@ -73,7 +74,7 @@ const sendMessage = (Chat, socket) => {
                 separator: " : ",
                 room: Chat.state.title
             })
-            axios.post("http://localhost:9000/api/messages", { message: message , channelTitle : title});
+            axios.post("http://localhost:9000/api/messages", { message: message , channelTitle : title, author : authService.getCurrentUser().username, authorId : authService.getCurrentUser().id});
             break;
     }
 

@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `irc` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `irc`;
--- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: irc
 -- ------------------------------------------------------
--- Server version	8.0.22
+-- Server version	8.0.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,11 +29,9 @@ CREATE TABLE `channels` (
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 INSERT INTO `channels` (`name`) VALUES ('Global Chat');
-
 --
 -- Table structure for table `messages`
 --
@@ -45,10 +43,14 @@ CREATE TABLE `messages` (
   `id` int NOT NULL AUTO_INCREMENT,
   `message` varchar(45) DEFAULT NULL,
   `idchannel` int DEFAULT NULL,
+  `author` varchar(45) DEFAULT NULL,
+  `authorid` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idchannel_idx` (`idchannel`),
+  KEY `fkidauthor_idx` (`authorid`),
+  CONSTRAINT `fkidauthor` FOREIGN KEY (`authorid`) REFERENCES `users` (`id`),
   CONSTRAINT `fkidchannel` FOREIGN KEY (`idchannel`) REFERENCES `channels` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,10 +66,10 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updateAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `login_name` varchar(45) DEFAULT NULL ,
+  `login_name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_name_UNIQUE` (`login_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -79,4 +81,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-26 10:34:22
+-- Dump completed on 2021-01-26 17:19:04
