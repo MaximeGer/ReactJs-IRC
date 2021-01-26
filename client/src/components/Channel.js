@@ -2,6 +2,7 @@ import React from "react";
 import io from "socket.io-client";
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 import { drag, drop, allowDrop } from "../scripts/drag&drop"
+import AuthService from "../services/auth.service";
 
 import sendMessage from "../scripts/sendMessage"
 
@@ -11,7 +12,6 @@ class Channel extends React.Component {
         super(props);
 
         this.state = {
-            username: this.props.username,
             message: '',
             error: '',
             success: '',
@@ -23,8 +23,7 @@ class Channel extends React.Component {
 
         socket.emit("JOIN_ROOM", {
             room: this.props.title,
-            username: this.state.username,
-            parentId: this.props.parentId
+            username: AuthService.getCurrentUser().username,
         })
 
         socket.on('connect', () => {
@@ -39,35 +38,10 @@ class Channel extends React.Component {
 
         commonReceiveFunctions(socket, this);
 
-        socket.on('RECEIVE_NEW_USERNAME', (data) => {
-            this.setState({ username: data.newUsername })
-        })
-
         this.sendMessage = ev => {
             ev.preventDefault();
 
             sendMessage(this, socket);
-
-
-
-
-            // var message = this.state.message;
-            // var usersRegex = new RegExp("^/users");
-
-            // if (usersRegex.test(message)) {
-            //     showUsers(this.state.title, socket);
-
-            // } else {
-            //     // NORMAL MESSAGE TO THE CHANNEL
-            //     // SAVE TO BDD - with author + message + channel + time? 
-            //     socket.emit('SEND_MESSAGE', {
-            //         author: this.state.username,
-            //         message: message,
-            //         separator: " : ",
-            //         room: this.state.title
-            //     })
-            // }
-            // this.setState({ message: '' });
         }
     }
     render() {
@@ -87,6 +61,8 @@ class Channel extends React.Component {
                 </div>
                 <div className="card-footer">
                     <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+                    <div className="errorCommands">{this.state.error}</div>
+                    <div className="successCommands">{this.state.success}</div>
                     <br />
                     <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
                 </div>

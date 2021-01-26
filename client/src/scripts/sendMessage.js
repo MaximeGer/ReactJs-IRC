@@ -9,6 +9,9 @@ import showUsers from "../commands/showUsers"
 import listChannels from "../commands/listChannels"
 import helpMessage from "../commands/helpMessage"
 
+import AuthService from "../services/auth.service";
+
+
 const sendMessage = (Chat, socket) => {
 
     var message = Chat.state.message;
@@ -64,7 +67,7 @@ const sendMessage = (Chat, socket) => {
 
         default:
             socket.emit('SEND_MESSAGE', {
-                author: Chat.state.username,
+                author: AuthService.getCurrentUser().username,
                 message: message,
                 separator: " : ",
                 room: Chat.state.title

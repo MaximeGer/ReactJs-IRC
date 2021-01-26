@@ -1,6 +1,8 @@
 import ReactDOM from 'react-dom'
 import addMessage from "../scripts/addMessage"
 
+import AuthService from "../services/auth.service";
+
 const joinChannel = async (name, Chat, socket) => {
     await fetch("http://localhost:9000/api/channels/byName/" + name, {
         method: 'GET',
@@ -26,7 +28,7 @@ const joinChannel = async (name, Chat, socket) => {
                 addMessage(channel,
                     {
                         author: "System",
-                        message: Chat.state.username + " joined the channel",
+                        message: AuthService.getCurrentUser().username + " joined the channel",
                         separator: " : "
                     })
 
@@ -37,7 +39,7 @@ const joinChannel = async (name, Chat, socket) => {
 
                 socket.emit('SEND_MESSAGE', {
                     author: "System",
-                    message: Chat.state.username + " joined the channel",
+                    message: AuthService.getCurrentUser().username + " joined the channel",
                     separator: " : ",
                     room: name
                 })

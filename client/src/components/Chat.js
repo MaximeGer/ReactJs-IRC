@@ -1,6 +1,6 @@
 import UserService from "../services/user.service";
 import React, { Component } from "react";
-import Global from "./Global_chat";
+import Channel from "./Channel";
 
 class Chat extends Component {
 
@@ -8,6 +8,7 @@ class Chat extends Component {
         super(props);
 
         this.state = {
+            channels: new Map(),
             content: ""
         };
     }
@@ -30,12 +31,20 @@ class Chat extends Component {
         );
     }
 
+
     render() {
+        const handleNewChildId = (newId, nameChannel) => {
+            const addIdToChannel = this.state.channels;
+            addIdToChannel.set(nameChannel, newId)
+            this.setState({ channels: addIdToChannel })
+        }
         return (
             <div className="Chat">
                 <div className="container" id="global">
                     <div className="row">
-                        <Global />
+                        <div className="col-12">
+                            <Channel title={"Global Chat"} username={this.state.username} onSetUpId={handleNewChildId} />
+                        </div>
                     </div>
                 </div>
                 <div className="container" id="channels">

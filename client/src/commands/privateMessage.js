@@ -1,3 +1,5 @@
+import AuthService from "../services/auth.service";
+
 const privateMessage = (commandString, Chat, socket) => {
     var nickToSend = commandString.substr(0, commandString.indexOf(' '));
     var messageToSend = commandString.substr(commandString.indexOf(' ') + 1);
@@ -8,7 +10,7 @@ const privateMessage = (commandString, Chat, socket) => {
     } else {
         // SEND MESSAGE
         socket.emit('SEND_PRIVATE_MESSAGE', {
-            author: Chat.state.username,
+            author: AuthService.getCurrentUser().username,
             message: messageToSend,
             separator: " (private) : ",
             receiver: nickToSend
