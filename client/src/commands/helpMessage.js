@@ -1,6 +1,5 @@
 import addMessage from "../scripts/addMessage";
 
-
 const helpMessage = (commandString, Chat) => {
     addMessage(Chat,
         {

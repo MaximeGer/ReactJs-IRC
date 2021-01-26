@@ -1,8 +1,10 @@
 import React from "react";
 import io from "socket.io-client";
-import showUsers from "../commands/showUsers"
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 import { drag, drop, allowDrop } from "../scripts/drag&drop"
+
+import sendMessage from "../scripts/sendMessage"
+
 
 class Channel extends React.Component {
     constructor(props) {
@@ -44,23 +46,28 @@ class Channel extends React.Component {
         this.sendMessage = ev => {
             ev.preventDefault();
 
-            var message = this.state.message;
-            var usersRegex = new RegExp("^/users");
+            sendMessage(this, socket);
 
-            if (usersRegex.test(message)) {
-                showUsers(this.state.title, socket);
 
-            } else {
-                // NORMAL MESSAGE TO THE CHANNEL
-                // SAVE TO BDD - with author + message + channel + time? 
-                socket.emit('SEND_MESSAGE', {
-                    author: this.state.username,
-                    message: message,
-                    separator: " : ",
-                    room: this.state.title
-                })
-            }
-            this.setState({ message: '' });
+
+
+            // var message = this.state.message;
+            // var usersRegex = new RegExp("^/users");
+
+            // if (usersRegex.test(message)) {
+            //     showUsers(this.state.title, socket);
+
+            // } else {
+            //     // NORMAL MESSAGE TO THE CHANNEL
+            //     // SAVE TO BDD - with author + message + channel + time? 
+            //     socket.emit('SEND_MESSAGE', {
+            //         author: this.state.username,
+            //         message: message,
+            //         separator: " : ",
+            //         room: this.state.title
+            //     })
+            // }
+            // this.setState({ message: '' });
         }
     }
     render() {

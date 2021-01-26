@@ -9,13 +9,15 @@ const createChannel = async (name, Chat) => {
     } else {
         // CREATE CHANNEL 
         await axios.post("http://localhost:9000/api/channels", { name: name })
-            .then(response => {
+            .then( response => {
+                Chat.setState({ success: "The channel \"" + name + "\" has been successfully created" });
+
                 if (response.status === 200) {
                     Chat.setState({ success: "The channel \"" + name + "\" has been successfully created" });
                 } else {
                     Chat.setState({ error: "The channel \"" + name + "\" couldn't be created" });
                 }
-            }).catch(err => {
+            }).catch(() => {
                 Chat.setState({ error: "The channel \"" + name + "\" couldn't be created" });
             });
     }

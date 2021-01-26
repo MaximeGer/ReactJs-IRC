@@ -6,8 +6,13 @@ const quitChannel = (name, Chat, socket) => {
         Chat.setState({ error: "You are not part of Chat channel : " + name });
     } else {
         // QUIT CHANNEL
-        console.log("Quit the channel with the name : " + name + " if it exist and you joined it");
-        //Chat.state.channels.splice(name, 1);
+        
+        socket.emit('SEND_MESSAGE', {
+            author: "System",
+            message: Chat.state.username + " leaved the channel",
+            separator: " : ",
+            room: name
+        })
 
         var idToDisconnect = Chat.state.channels.get(name);
         socket.emit('QUIT_ROOM', {
