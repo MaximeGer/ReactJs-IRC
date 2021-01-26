@@ -6,7 +6,7 @@ import AuthService from "../services/auth.service";
 const joinChannel = async (name, Chat, socket) => {
     await fetch("http://localhost:9000/api/channels/byName/" + name, {
         method: 'GET',
-    }).then(async response => {
+    }).then(response => {
         if (response.status === 200) {
             if (name === "" || name === " " || name === null) {
                 Chat.setState({ error: "You have to specify a name for the channel you want to join : \"/join newChannel\"" });
@@ -21,7 +21,7 @@ const joinChannel = async (name, Chat, socket) => {
                 var nodes = document.querySelectorAll("#channels .row .col-4")
                 var last = nodes[nodes.length - 1];
 
-                const element = Chat.renderChannel(name,  response.id);
+                const element = Chat.props.parent.renderChannel(name,  response.id);
 
                 var channel = ReactDOM.render(element, last)
 
@@ -52,6 +52,7 @@ const joinChannel = async (name, Chat, socket) => {
             Chat.setState({ error: "The channel \"" + name + "\" couldn't be joined" });
         }
     }).catch(err => {
+        console.log(err)
         Chat.setState({ error: "The channel \"" + name + "\" couldn't be joined" });
     });
 }

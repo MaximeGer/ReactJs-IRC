@@ -30,22 +30,33 @@ class Chat extends Component {
                 });
             }
         );
+
+        
+        const handleNewChild = (newId, nameChannel) => {
+            const addIdToChannel = this.state.channels;
+            addIdToChannel.set(nameChannel, newId)
+            this.setState({ channels: addIdToChannel })
+        }
+        this.renderChannel = (name) => {
+            return (
+                <Channel title={name} username={this.state.username} onSetUpId={handleNewChild} parent={this} />
+            );
+        }
     }
 
 
     render() {
-        const handleNewChildId = (newId, nameChannel) => {
+        const handleNewChild = (newId, nameChannel) => {
             const addIdToChannel = this.state.channels;
             addIdToChannel.set(nameChannel, newId)
             this.setState({ channels: addIdToChannel })
         }
         return (
-            
             <div className="Chat">
                 <div className="container" id="global">
                     <div className="row">
                         <div className="col-12">
-                            <Channel title={"Global Chat"} username={this.state.username} onSetUpId={handleNewChildId} />
+                            <Channel title={"Global Chat"} username={this.state.username} onSetUpId={handleNewChild} parent={this} />
                         </div>
                     </div>
                 </div>
@@ -55,7 +66,6 @@ class Chat extends Component {
                     </div>
                 </div>
             </div>
-
         );
     }
 }

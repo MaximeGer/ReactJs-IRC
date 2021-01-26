@@ -18,7 +18,9 @@ class Channel extends React.Component {
             messages: [],
             title: this.props.title
         };
+    }
 
+    componentDidMount() {
         const socket = io('localhost:9000');
 
         socket.emit("JOIN_ROOM", {
@@ -39,6 +41,7 @@ class Channel extends React.Component {
         commonReceiveFunctions(socket, this);
 
         this.sendMessage = ev => {
+
             ev.preventDefault();
 
             sendMessage(this, socket);
