@@ -29,6 +29,7 @@ class Channel extends React.Component {
             username: AuthService.getCurrentUser().username,
         })
 
+
         socket.on('connect', () => {
             this.props.onSetUpId(socket.id, this.props.title)
         });
@@ -37,6 +38,13 @@ class Channel extends React.Component {
             if (document.getElementById('Channel name : ' + name)) {
                 document.getElementById('Channel name : ' + name).remove();
             }
+        })
+
+        socket.emit('SEND_MESSAGE', {
+            author: "System",
+            message: AuthService.getCurrentUser().username + " joined the channel",
+            separator: " : ",
+            room: this.state.title
         })
 
         commonReceiveFunctions(socket, this);
