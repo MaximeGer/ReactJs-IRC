@@ -21,7 +21,7 @@ class Channel extends React.Component {
     }
 
     componentDidMount() {
-        
+
         const socket = io('localhost:9000');
 
         socket.emit("JOIN_ROOM", {
@@ -55,9 +55,6 @@ class Channel extends React.Component {
 
             sendMessage(this, socket);
         }
-        this.setState({ messages: ["user"]});
-
-
     }
     render() {
         return (
