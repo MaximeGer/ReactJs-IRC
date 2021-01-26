@@ -1,6 +1,7 @@
 import UserService from "../services/user.service";
 import React, { Component } from "react";
 import Channel from "./Channel";
+// import { DragDropContext } from 'react-beautiful-dnd';
 
 class Chat extends Component {
 
@@ -39,6 +40,7 @@ class Chat extends Component {
             this.setState({ channels: addIdToChannel })
         }
         return (
+            
             <div className="Chat">
                 <div className="container" id="global">
                     <div className="row">
@@ -53,6 +55,7 @@ class Chat extends Component {
                     </div>
                 </div>
             </div>
+
         );
     }
 }
