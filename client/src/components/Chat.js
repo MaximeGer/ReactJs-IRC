@@ -1,6 +1,8 @@
 import UserService from "../services/user.service";
 import React, { Component } from "react";
 import Global from "./Global_chat";
+import authService from "../services/auth.service";
+// import { DragDropContext } from 'react-beautiful-dnd';
 
 class Chat extends Component {
 
@@ -8,6 +10,8 @@ class Chat extends Component {
         super(props);
 
         this.state = {
+            username: authService.getCurrentUser().username,
+            id: authService.getCurrentUser().id,
             content: ""
         };
     }
@@ -32,6 +36,7 @@ class Chat extends Component {
 
     render() {
         return (
+            
             <div className="Chat">
                 <div className="container" id="global">
                     <div className="row">
@@ -44,6 +49,7 @@ class Chat extends Component {
                     </div>
                 </div>
             </div>
+
         );
     }
 }

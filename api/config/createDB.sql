@@ -32,6 +32,8 @@ CREATE TABLE `channels` (
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO `channels` (`name`) VALUES ('Global Chat');
+
 --
 -- Table structure for table `messages`
 --
@@ -62,8 +64,9 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updateAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `login_name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `login_name` varchar(45) DEFAULT NULL ,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_name_UNIQUE` (`login_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
