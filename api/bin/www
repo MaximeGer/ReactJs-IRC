@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
 
   socket.on('DELETE_ROOM', function (data) {
     getConnectedSockets().forEach(function (s) {
-      if (s.id == data.id) {
+      if (s.rooms.has(data.room)) {
         s.emit('ROOM_DELETED', data.room);
         s.leave(data.room);
         connectedSockets.delete(s);
