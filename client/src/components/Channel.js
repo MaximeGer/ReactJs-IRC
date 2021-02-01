@@ -6,6 +6,7 @@ import AuthService from "../services/auth.service";
 import { v4 } from 'uuid';
 
 import sendMessage from "../scripts/sendMessage"
+import getMessages from "../scripts/getMessages";
 
 
 class Channel extends React.Component {
@@ -40,10 +41,12 @@ class Channel extends React.Component {
         });
 
         socket.on('ROOM_DELETED', (name) => {
-            if (document.getElementById('Channel name : ' + name)) {
-                document.getElementById('Channel name : ' + name).remove();
+            if (document.getElementById(name)) {
+                document.getElementById(name).remove();
             }
         })
+
+        getMessages(this.state.title,this,socket)
 
         socket.emit('SEND_MESSAGE', {
             author: "System",

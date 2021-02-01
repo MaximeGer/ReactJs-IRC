@@ -74,7 +74,7 @@ const sendMessage = (Chat, socket) => {
                 separator: " : ",
                 room: Chat.state.title
             })
-            axios.post("http://localhost:9000/api/messages", { message: message , channelTitle : title, author : authService.getCurrentUser().username, authorId : authService.getCurrentUser().id});
+            axios.post("http://localhost:9000/api/messages", { message: message , channelTitle : title, author : authService.getCurrentUser().username, authorId : authService.getCurrentUser().id, namechannel: title});
             break;
     }
 

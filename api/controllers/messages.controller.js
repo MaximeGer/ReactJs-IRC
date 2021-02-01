@@ -18,11 +18,12 @@ exports.create = (req, res) => {
     message: req.body.message,
     channelTitle: req.body.channelTitle,
     author: req.body.author,
-    authorId: req.body.authorId
+    authorId: req.body.authorId,
+    namechannel: req.body.namechannel
   };
 
   // Save message in the database
-  sequelize.query("INSERT INTO messages (`message`, `idchannel`, `author`, `authorid`) Values (\""+message.message+"\", (Select id from channels where name = \""+ message.channelTitle +"\"), \""+ message.author +"\", \"" + message.authorId + "\")" , { type: sequelize.QueryTypes.INSERT })
+  sequelize.query("INSERT INTO messages (`message`, `idchannel`, `author`, `authorid`, `namechannel`) Values (\""+message.message+"\", (Select id from channels where name = \""+ message.channelTitle +"\"), \""+ message.author +"\", \"" + message.authorId + "\", \"" + message.namechannel + "\")" , { type: sequelize.QueryTypes.INSERT })
     .then(data => {
       res.send(data);
     })
@@ -50,8 +51,8 @@ exports.findAll = (req, res) => {
 
 // Retrieve all messages from a channel.
 exports.findAllByChannel = (req, res) => {
-  const idchannel = req.query.idchannel;
-  var condition = idchannel ? { idchannel: { [Op.eq]: `${idchannel}` } } : null;
+  const name = req.params.name;
+  var condition = name ? { namechannel: { [Op.eq]: `${name}` } } : null;
 
   Message.findAll({ where: condition })
     .then(data => {

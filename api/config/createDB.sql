@@ -45,6 +45,7 @@ CREATE TABLE `messages` (
   `idchannel` int DEFAULT NULL,
   `author` varchar(45) DEFAULT NULL,
   `authorid` int DEFAULT NULL,
+  `namechannel` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idchannel_idx` (`idchannel`),
   KEY `fkidauthor_idx` (`authorid`),
@@ -68,7 +69,8 @@ CREATE TABLE `users` (
   `updateAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `login_name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `login_name_UNIQUE` (`login_name`)
+  UNIQUE KEY `login_name_UNIQUE` (`login_name`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
