@@ -35,6 +35,7 @@ class Channel extends React.Component {
         });
 
         socket.on('ROOM_DELETED', (name) => {
+            console.log(name)
             if (document.getElementById('Channel name : ' + name)) {
                 document.getElementById('Channel name : ' + name).remove();
             }

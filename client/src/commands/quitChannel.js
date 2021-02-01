@@ -18,7 +18,7 @@ const quitChannel = (name, Chat, socket) => {
 
         var idToDisconnect = Chat.props.parent.state.channels.get(name);
         console.log(idToDisconnect)
-        socket.emit('QUIT_ROOM', {
+        socket.emit('DELETE_ROOM', {
             id: idToDisconnect,
             room: name
         })
