@@ -56,25 +56,31 @@ io.on('connection', (socket) => {
   })
 
   socket.on('SEND_PRIVATE_MESSAGE', function (data) {
-    var found = 0;
+    var found = false;
+
     getConnectedSockets().forEach(function (s) {
-      if (s.handshake.username == data.receiver && !s.handshake.parentId) {
+      if (s.handshake.username == data.receiver && s.handshake.room == data.room) {
         socket.to(s.id).emit('RECEIVE_MESSAGE', data);
-        found += 1;
+        data.separator = " (to " + data.receiver + ")";
+        console.log(data.room)
+        console.log(socket.id)
+        console.log(s.id)
+        io.to(socket.id).emit('RECEIVE_MESSAGE', data);
+
+        found = true;
       }
     })
-    if (found > 0) {
-      data.separator = " (to " + data.receiver + " = " + found + " users) : "
-      io.to(socket.id).emit('RECEIVE_MESSAGE', data);
-    } else {
+
+    if (!found) {
       io.to(socket.id).emit('RECEIVE_ERROR', {
-        message: 'Couldn\'t find username with the name : ' + data.receiver
+        message: 'Couldn\'t find username with the name : ' + data.receiver + 'in this room'
       });
     }
   })
 
   socket.on('JOIN_ROOM', function (data) {
     socket.handshake.username = data.username;
+    socket.handshake.room = data.room;
     socket.handshake.parentId = data.parentId;
     socket.join(data.room);
     connectedSockets.add(socket);

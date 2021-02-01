@@ -35,6 +35,10 @@ class Channel extends React.Component {
             this.props.onSetUpId(socket.id, this.props.title)
         });
 
+        socket.on('RECEIVE_ERROR', (data) => {
+            this.setState({ error: data.message });
+        });
+
         socket.on('ROOM_DELETED', (name) => {
             if (document.getElementById('Channel name : ' + name)) {
                 document.getElementById('Channel name : ' + name).remove();

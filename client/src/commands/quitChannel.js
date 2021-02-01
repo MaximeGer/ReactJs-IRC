@@ -5,7 +5,9 @@ const quitChannel = (name, Chat, socket) => {
         Chat.setState({ error: "You have to specify a name for the channel you want to quit : \"/quit newChannel\"" });
     } else if (!Chat.props.parent.state.channels.has(name)) {
         // If not part of Chat channel :
-        Chat.setState({ error: "You are not part of Chat channel : " + name });
+        Chat.setState({ error: "You are not part of this channel : " + name });
+    } else if (name === "Global Chat") {
+        Chat.setState({ error: "You cannot quit the Global Chat" });
     } else {
         // QUIT CHANNEL
         

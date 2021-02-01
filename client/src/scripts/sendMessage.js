@@ -29,7 +29,7 @@ const sendMessage = (Chat, socket) => {
 
         case new RegExp("^/msg(?![^ ])").test(message):
             commandString = message.slice(5);
-            privateMessage(commandString, Chat, socket);
+            privateMessage(commandString, Chat, socket, Chat.state.title);
             break;
 
         case new RegExp("^/nick(?![^ ])").test(message):

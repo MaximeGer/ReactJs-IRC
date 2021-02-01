@@ -1,6 +1,6 @@
 import AuthService from "../services/auth.service";
 
-const privateMessage = (commandString, Chat, socket) => {
+const privateMessage = (commandString, Chat, socket, room) => {
     var nickToSend = commandString.substr(0, commandString.indexOf(' '));
     var messageToSend = commandString.substr(commandString.indexOf(' ') + 1);
 
@@ -13,7 +13,8 @@ const privateMessage = (commandString, Chat, socket) => {
             author: AuthService.getCurrentUser().username,
             message: messageToSend,
             separator: " (private) : ",
-            receiver: nickToSend
+            receiver: nickToSend,
+            room: room
         })
     }
 }
