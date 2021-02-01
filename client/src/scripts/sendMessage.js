@@ -23,6 +23,9 @@ const sendMessage = (Chat, socket) => {
     Chat.setState({ success: "" });
 
     switch (true) {
+        case message === "":
+            break;
+
         case new RegExp("^/users(?![^ ])").test(message):
             showUsers(Chat.state.title, socket);
             break;

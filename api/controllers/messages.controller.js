@@ -66,6 +66,22 @@ exports.findAllByChannel = (req, res) => {
     });
 };
 
+// Retrieve all messages from a channel.
+exports.find20ByChannel = (req, res) => {
+  const name = req.params.name;
+
+  sequelize.query("SELECT message, author FROM (SELECT id, message, author FROM messages WHERE namechannel = \"" + name +"\" ORDER BY id DESC LIMIT 20) messages ORDER BY id ASC")
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving messages."
+      });
+    });
+};
+
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
