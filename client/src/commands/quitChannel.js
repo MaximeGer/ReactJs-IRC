@@ -3,7 +3,7 @@ import AuthService from "../services/auth.service";
 const quitChannel = (name, Chat, socket) => {
     if (name === "" || name === " " || name === null) {
         Chat.setState({ error: "You have to specify a name for the channel you want to quit : \"/quit newChannel\"" });
-    } else if (!Chat.state.channels.get(name)) {
+    } else if (!Chat.props.parent.state.channels.has(name)) {
         // If not part of Chat channel :
         Chat.setState({ error: "You are not part of Chat channel : " + name });
     } else {
@@ -16,13 +16,14 @@ const quitChannel = (name, Chat, socket) => {
             room: name
         })
 
-        var idToDisconnect = Chat.state.channels.get(name);
+        var idToDisconnect = Chat.props.parent.state.channels.get(name);
+        console.log(idToDisconnect)
         socket.emit('QUIT_ROOM', {
             id: idToDisconnect,
             room: name
         })
 
-        Chat.state.channels.delete(name);
+        Chat.props.parent.state.channels.delete(name);
     }
 }
 

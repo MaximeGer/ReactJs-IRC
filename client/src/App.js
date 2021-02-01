@@ -35,20 +35,19 @@ class App extends Component {
   render() {
     const { currentUser } = this.state;
 
-    return (
-      <BrowserRouter>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <div className="navbar-nav mr-auto">
-            {currentUser && (
+    if (currentUser) {
+      return (
+
+        <BrowserRouter>
+          <nav className="navbar navbar-expand navbar-dark bg-dark">
+            <div className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link to={"/chat"} className="nav-link">
                   Chat
                 </Link>
               </li>
-            )}
-          </div>
+            </div>
 
-          {currentUser ? (
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
                 <a href="/login" className="nav-link" onClick={this.logOut}>
@@ -56,44 +55,77 @@ class App extends Component {
                 </a>
               </li>
             </div>
-          ) : (
-              <div className="navbar-nav ml-auto">
-                <li className="nav-item">
-                  <Link to={"/login"} className="nav-link">
-                    Login
+            <div className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <Link to={"/login"} className="nav-link">
+                  Login
                 </Link>
-                </li>
+              </li>
 
-                <li className="nav-item">
-                  <Link to={"/register"} className="nav-link">
-                    Sign Up
+              <li className="nav-item">
+                <Link to={"/register"} className="nav-link">
+                  Sign Up
                 </Link>
-                </li>
-              </div>
-            )}
-        </nav>
+              </li>
+            </div>
+          </nav>
 
-        <div className="container mt-3">
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => {
-                return (
-                  { currentUser } ?
-                    <Redirect to="/chat" /> :
+          <div className="container mt-3">
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => {
+                  return (
+                    <Redirect to="/chat" />
+                  )
+                }}
+              />
+              <Route exact path={["/", "/home", "/chat"]} component={Chat} username={AuthService.getCurrentUser()} />
+            </Switch>
+          </div>
+        </BrowserRouter>
+      );
+    } else {
+      return (
+        <BrowserRouter>
+          <nav className="navbar navbar-expand navbar-dark bg-dark">
+            <div className="navbar-nav mr-auto"></div>
+
+            <div className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <Link to={"/login"} className="nav-link">
+                  Login
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to={"/register"} className="nav-link">
+                  Sign Up
+                </Link>
+              </li>
+            </div>
+          </nav>
+          <div className="container mt-3">
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => {
+                  return (
                     <Redirect to="/login" />
-                )
-              }}
-            />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path={["/", "/home", "/chat"]} component={Chat} username={AuthService.getCurrentUser()} />
-          </Switch>
-        </div>
-      </BrowserRouter>
+                  )
+                }}
+              />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+            </Switch>
+          </div>
+        </BrowserRouter>
 
-    );
+
+      )
+    }
   }
 }
 
