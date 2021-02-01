@@ -43,6 +43,8 @@ class Channel extends React.Component {
             if (document.getElementById(name)) {
                 document.getElementById(name).remove();
             }
+            this.props.parent.state.channels.delete(name);
+
         })
 
         getMessages(this.state.title,this,socket)

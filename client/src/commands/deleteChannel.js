@@ -25,7 +25,9 @@ const deleteChannel = async (name, Chat, socket) => {
                     room: name
                 })
 
-                Chat.props.parent.state.channels.delete(name); socket.emit('DELETE_ROOM', {
+                Chat.props.parent.state.channels.delete(name); 
+                
+                socket.emit('DELETE_ROOM', {
                     room: name
                 })
 
