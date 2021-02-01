@@ -5,9 +5,6 @@ const deleteChannel = async (name,Chat, socket) => {
         Chat.setState({ error: "You have to specify a name for the channel you want to delete : \"/delete newChannel\"" });
     } else if (name === "Global Chat") {
         Chat.setState({ error: "You cannot delete the Global Chat" });
-    } else if (!Chat.state.channels.get(name)) {
-        // If does not exist :
-        Chat.setState({ error: "You are cannot delete a channel you are not part of : " + name });
     } else {
         // DELETE CHANNEL
         await fetch("http://localhost:9000/api/channels/" + name, {

@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
 import { drag, drop, allowDrop } from "../scripts/drag&drop"
 import AuthService from "../services/auth.service";
+import { v4 } from 'uuid';
 
 import sendMessage from "../scripts/sendMessage"
 
@@ -35,7 +36,6 @@ class Channel extends React.Component {
         });
 
         socket.on('ROOM_DELETED', (name) => {
-            console.log(name)
             if (document.getElementById('Channel name : ' + name)) {
                 document.getElementById('Channel name : ' + name).remove();
             }
@@ -66,7 +66,7 @@ class Channel extends React.Component {
                     <div className="messages">
                         {this.state.messages.map(message => {
                             return (
-                                <div>{message.author} {message.separator} {message.message}</div>
+                                <div key={v4()}>{message.author} {message.separator} {message.message}</div>
                             )
                         })}
                     </div>

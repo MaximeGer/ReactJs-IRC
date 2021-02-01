@@ -80,10 +80,19 @@ io.on('connection', (socket) => {
     connectedSockets.add(socket);
   })
 
-  socket.on('DELETE_ROOM', function (data) {
-    console.log(data.room)
+  socket.on('QUIT_ROOM', function (data) {
     getConnectedSockets().forEach(function (s) {
-      if (s.rooms.has(data.room)) {
+      if (s.id == data.id) {
+        s.emit('ROOM_DELETED', data.room);
+        s.leave(data.room);
+        connectedSockets.delete(s);
+      }
+    });
+  })
+
+  socket.on('DELETE_ROOM', function (data) {
+    getConnectedSockets().forEach(function (s) {
+      if (s.id == data.id) {
         s.emit('ROOM_DELETED', data.room);
         s.leave(data.room);
         connectedSockets.delete(s);
