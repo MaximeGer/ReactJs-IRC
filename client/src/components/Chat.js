@@ -1,7 +1,6 @@
 import UserService from "../services/user.service";
 import React, { Component } from "react";
 import Channel from "./Channel";
-import { DragDropContext } from 'react-beautiful-dnd';
 
 class Chat extends Component {
 
@@ -61,12 +60,9 @@ class Chat extends Component {
                     </div>
                 </div>
                 <div className="container" id="channels">
-                    <DragDropContext>
-                        <div className="row">
-                                
-                        </div>
-                    </DragDropContext>
-
+                    <div className="row">
+                            
+                    </div>
                 </div>
             </div>
         );

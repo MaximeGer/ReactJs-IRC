@@ -1,7 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
 import commonReceiveFunctions from "../socket/commonReceiveFunctions"
-import { drag, drop, allowDrop } from "../scripts/drag&drop"
 import AuthService from "../services/auth.service";
 import { v4 } from 'uuid';
 
@@ -66,7 +65,7 @@ class Channel extends React.Component {
     }
     render() {
         return (
-            <div className="card" id={this.state.title} draggable={true} onDragStart={drag} onDragOver={allowDrop} onDrop={drop}>
+            <div className="card" id={this.state.title} >
                 <div className="card-body">
                     <div className="card-title">{this.state.title}</div>
                     <hr />
