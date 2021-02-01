@@ -5,6 +5,12 @@ module.exports = (sequelize, Sequelize) => {
       },
       idchannel: {
         type: Sequelize.INTEGER
+      },
+      author: {
+        type: Sequelize.STRING
+      },
+      namechannel: {
+        type: Sequelize.STRING
       }
     });
   
