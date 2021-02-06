@@ -14,14 +14,18 @@ const joinChannel = async (name, Chat, socket) => {
                     var div = document.createElement("div");
                     div.className = "col-4 mt-4"
                     div.id = name;
+                    console.log("div :")
+                    console.log(div)
                     document.querySelector("#channels .row").append(div)
 
                     var nodes = document.querySelectorAll("#channels .row .col-4")
                     var last = nodes[nodes.length - 1];
+                    console.log("last :")
+                    console.log(last)
 
                     const element = Chat.props.parent.renderChannel(name, response.id);
 
-                    ReactDOM.render(element, last)
+                    ReactDOM.render(element, div)
 
                     var allChannels = new Map(Chat.state.channels);
                     allChannels.set(name, "");

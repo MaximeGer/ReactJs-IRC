@@ -4,4 +4,5 @@ const handleNewChild = (newId, nameChannel, Chat) => {
     Chat.setState({ channels: addIdToChannel })
 }
 
+
 export default handleNewChild;

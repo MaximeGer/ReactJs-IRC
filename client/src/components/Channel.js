@@ -32,7 +32,7 @@ class Channel extends React.Component {
 
 
         socket.on('connect', () => {
-            this.props.onSetUpId(socket.id, this.props.title)
+            this.props.onSetUpId(socket.id, this.props.title, this.props.parent)
         });
 
         socket.on('RECEIVE_ERROR', (data) => {
@@ -59,7 +59,6 @@ class Channel extends React.Component {
         commonReceiveFunctions(socket, this);
 
         this.sendMessage = ev => {
-
             ev.preventDefault();
 
             sendMessage(this, socket);
@@ -78,7 +77,6 @@ class Channel extends React.Component {
                             )
                         })}
                     </div>
-
                 </div>
                 <div className="card-footer">
                     <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />

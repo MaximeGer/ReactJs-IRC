@@ -1,6 +1,8 @@
 import UserService from "../services/user.service";
 import React, { Component } from "react";
 import Channel from "./Channel";
+import handleNewChild from "../scripts/handleNewChild"
+
 
 class Chat extends Component {
 
@@ -29,13 +31,6 @@ class Chat extends Component {
                 });
             }
         );
-
-        
-        const handleNewChild = (newId, nameChannel) => {
-            const addIdToChannel = this.state.channels;
-            addIdToChannel.set(nameChannel, newId)
-            this.setState({ channels: addIdToChannel })
-        }
         this.renderChannel = (name) => {
             return (
                 <Channel title={name} username={this.state.username} onSetUpId={handleNewChild} parent={this} />
@@ -45,11 +40,6 @@ class Chat extends Component {
 
 
     render() {
-        const handleNewChild = (newId, nameChannel) => {
-            const addIdToChannel = this.state.channels;
-            addIdToChannel.set(nameChannel, newId)
-            this.setState({ channels: addIdToChannel })
-        }
         return (
             <div className="Chat">
                 <div className="container" id="global">
